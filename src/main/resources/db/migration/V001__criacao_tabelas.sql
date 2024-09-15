@@ -70,7 +70,7 @@ CREATE TABLE comodos_imoveis(
 );
 
 CREATE TABLE locacoes(
-	id	INT PRIMARY KEY AUTO_INCREMENT,
+	id INT PRIMARY KEY AUTO_INCREMENT,
 
 	data_inicio DATE NOT NULL,
 

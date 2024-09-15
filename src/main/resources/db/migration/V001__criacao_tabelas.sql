@@ -24,7 +24,7 @@ CREATE TABLE ceps(
 
 	bairro VARCHAR(255) NOT NULL,
 
-	rua	VARCHAR(255) NOT NULL
+	rua VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE imoveis(

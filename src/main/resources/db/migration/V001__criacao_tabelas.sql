@@ -51,6 +51,7 @@ CREATE TABLE imoveis(
 
 CREATE TABLE comodos(
 	id INT PRIMARY KEY AUTO_INCREMENT,
+
 	descricao VARCHAR(50) NOT NULL
 );
 

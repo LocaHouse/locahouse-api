@@ -29,7 +29,7 @@ public class Usuario {
     private String nome;
 
     @Column(nullable = false)
-    private LocalDate data_nascimento;
+    private LocalDate dataNascimento;
 
     @Column(unique = true, nullable = false)
     private String email;

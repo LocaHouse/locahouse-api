@@ -6,6 +6,6 @@ spring:
       hibernate:
         format_sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/locahousedb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=America/Sao_Paulo
+    url: jdbc:mysql://localhost:3306/locahousedb?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=America/Sao_Paulo
     username: ${USER_DB}
     password: ${PASSWORD_DB}

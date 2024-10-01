@@ -20,6 +20,7 @@ public record UsuarioPostDto(
         String nome,
 
         @NotNull(message = "A data de nascimento é obrigatória.")
+        @PastOrPresent(message = "A data de nascimento não pode ser superior à atual.")
         @JsonProperty("data_nascimento")
         LocalDate dataNascimento,
 

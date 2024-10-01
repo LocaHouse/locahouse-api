@@ -1,5 +1,6 @@
 package br.com.locahouse.service.impl;
 
+import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
@@ -78,7 +79,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void verificarMaioridade(LocalDate dataNascimento) {
         if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
-            throw new RuntimeException("É necessário ser maior de 18 anos para prosseguir.");
+            throw new UsuarioMenorDeIdadeException();
     }
 
     private void salvar(Usuario usuario) {

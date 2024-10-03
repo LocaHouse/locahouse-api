@@ -29,12 +29,8 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<UsuarioGetDto> cadastrar(@Valid @RequestBody UsuarioPostDto dto) {
-        try {
-            Usuario usuario = usuarioService.cadastrar(UsuarioMapper.usuarioPostDtoToEntity(dto));
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
-            return ResponseEntity.created(location).body(UsuarioMapper.entityToUsuarioGetDto(usuario));
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        Usuario usuario = usuarioService.cadastrar(UsuarioMapper.usuarioPostDtoToEntity(dto));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
+        return ResponseEntity.created(location).body(UsuarioMapper.entityToUsuarioGetDto(usuario));
     }
 }

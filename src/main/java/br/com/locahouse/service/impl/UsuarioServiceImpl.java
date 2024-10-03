@@ -1,5 +1,7 @@
 package br.com.locahouse.service.impl;
 
+import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
+import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.service.UsuarioService;
@@ -54,13 +56,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void verificarUnicidadeDados(Usuario usuario) {
         if (this.buscarPeloCpf(usuario.getCpf()).isPresent())
-            throw new RuntimeException("CPF já cadastrado.");
+            throw new UniqueConstraintVioladaException("CPF");
 
         if (this.buscarPeloEmail(usuario.getEmail()).isPresent())
-            throw new RuntimeException("E-mail já cadastrado.");
+            throw new UniqueConstraintVioladaException("E-mail");
 
         if (this.buscarPeloTelefone(usuario.getTelefone()).isPresent())
-            throw new RuntimeException("Telefone já cadastrado.");
+            throw new UniqueConstraintVioladaException("Telefone");
     }
 
     private Optional<Usuario> buscarPeloCpf(String cpf) {
@@ -77,7 +79,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void verificarMaioridade(LocalDate dataNascimento) {
         if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
-            throw new RuntimeException("É necessário ser maior de 18 anos para prosseguir.");
+            throw new UsuarioMenorDeIdadeException();
     }
 
     private void salvar(Usuario usuario) {

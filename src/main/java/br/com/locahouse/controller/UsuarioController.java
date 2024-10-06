@@ -32,6 +32,11 @@ public class UsuarioController {
         return ResponseEntity.created(location).body(UsuarioMapper.entityToUsuarioGetDto(usuario));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioGetDto> buscarPeloId(@PathVariable Integer id) {
+        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioGetDto(this.usuarioService.buscarPeloId(id)));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioGetDto> atualizar(@PathVariable Integer id, @Valid @RequestBody UsuarioPutDto dto) {
         Usuario usuario = usuarioService.atualizar(id, UsuarioMapper.usuarioPutDtoToEntity(dto));

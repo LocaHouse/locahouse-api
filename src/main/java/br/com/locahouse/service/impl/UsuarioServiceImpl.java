@@ -1,11 +1,15 @@
 package br.com.locahouse.service.impl;
 
+import br.com.locahouse.exception.BusinessException;
+import br.com.locahouse.exception.RecursoNaoEcontradoException;
 import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.service.UsuarioService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,14 +23,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository repository;
 
     @Autowired
-    public UsuarioServiceImpl(UsuarioRepository repository) {
+    private UsuarioServiceImpl(UsuarioRepository repository) {
         this.repository = repository;
     }
 
     @Override
     public Usuario cadastrar(Usuario usuario) {
-        this.verificarUnicidadeDados(usuario);
-        this.verificarMaioridade(usuario.getDataNascimento());
         this.salvar(usuario);
         return usuario;
     }
@@ -39,14 +41,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario buscarPeloId(Integer id) {
-        // TODO criar lógica de busca
-        return null;
+        return this.repository.findById(id).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
     }
 
     @Override
     public Usuario atualizar(Integer id, Usuario usuario) {
-        // TODO criar lógica de atualização
-        return null;
+        if (!id.equals(usuario.getId()))
+            throw new BusinessException("Os identificadores devem ser iguais.", HttpStatus.CONFLICT);
+        Usuario usuarioParaAtualizar = this.buscarPeloId(id);
+        BeanUtils.copyProperties(usuario, usuarioParaAtualizar, "id", "senha");
+        this.salvar(usuarioParaAtualizar);
+        return usuarioParaAtualizar;
     }
 
     @Override
@@ -54,35 +59,34 @@ public class UsuarioServiceImpl implements UsuarioService {
         // TODO criar lógica de deleção
     }
 
-    private void verificarUnicidadeDados(Usuario usuario) {
-        if (this.buscarPeloCpf(usuario.getCpf()).isPresent())
+    private void salvar(Usuario usuario) {
+        this.verificarUnicidadeCpf(usuario.getId(), usuario.getCpf());
+        this.verificarUnicidadeEmail(usuario.getId(), usuario.getEmail());
+        this.verificarUnicidadeTelefone(usuario.getId(), usuario.getTelefone());
+        this.verificarMaioridade(usuario.getDataNascimento());
+        this.repository.save(usuario);
+    }
+
+    private void verificarUnicidadeCpf(Integer id, String cpf) {
+        Optional<Usuario> usuario = this.repository.findByCpf(cpf);
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
             throw new UniqueConstraintVioladaException("CPF");
+    }
 
-        if (this.buscarPeloEmail(usuario.getEmail()).isPresent())
+    private void verificarUnicidadeEmail(Integer id, String email) {
+        Optional<Usuario> usuario = this.repository.findByEmail(email);
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
             throw new UniqueConstraintVioladaException("E-mail");
+    }
 
-        if (this.buscarPeloTelefone(usuario.getTelefone()).isPresent())
+    private void verificarUnicidadeTelefone(Integer id, String telefone) {
+        Optional<Usuario> usuario = this.repository.findByTelefone(telefone);
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
             throw new UniqueConstraintVioladaException("Telefone");
-    }
-
-    private Optional<Usuario> buscarPeloCpf(String cpf) {
-        return this.repository.findByCpf(cpf);
-    }
-
-    private Optional<Usuario> buscarPeloEmail(String email) {
-        return this.repository.findByEmail(email);
-    }
-
-    private Optional<Usuario> buscarPeloTelefone(String telefone) {
-        return this.repository.findByTelefone(telefone);
     }
 
     private void verificarMaioridade(LocalDate dataNascimento) {
         if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
             throw new UsuarioMenorDeIdadeException();
-    }
-
-    private void salvar(Usuario usuario) {
-        this.repository.save(usuario);
     }
 }

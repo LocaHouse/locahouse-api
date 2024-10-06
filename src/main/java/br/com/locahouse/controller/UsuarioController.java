@@ -2,16 +2,14 @@ package br.com.locahouse.controller;
 
 import br.com.locahouse.dto.usuario.UsuarioGetDto;
 import br.com.locahouse.dto.usuario.UsuarioPostDto;
+import br.com.locahouse.dto.usuario.UsuarioPutDto;
 import br.com.locahouse.mapper.UsuarioMapper;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -23,7 +21,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @Autowired
-    public UsuarioController(UsuarioService usuarioService) {
+    private UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
@@ -32,5 +30,11 @@ public class UsuarioController {
         Usuario usuario = usuarioService.cadastrar(UsuarioMapper.usuarioPostDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(location).body(UsuarioMapper.entityToUsuarioGetDto(usuario));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioGetDto> atualizar(@PathVariable Integer id, @Valid @RequestBody UsuarioPutDto dto) {
+        Usuario usuario = usuarioService.atualizar(id, UsuarioMapper.usuarioPutDtoToEntity(dto));
+        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioGetDto(usuario));
     }
 }

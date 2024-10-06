@@ -1,15 +1,15 @@
 package br.com.locahouse.exception;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 @Getter
 public class BusinessException extends RuntimeException {
 
-    HttpStatus httpStatus;
+    HttpStatusCode httpStatusCode;
 
-    public BusinessException(String mensagem, HttpStatus httpStatus) {
+    public BusinessException(String mensagem, HttpStatusCode httpStatusCode) {
         super(mensagem);
-        this.httpStatus = httpStatus;
+        this.httpStatusCode = httpStatusCode;
     }
 }

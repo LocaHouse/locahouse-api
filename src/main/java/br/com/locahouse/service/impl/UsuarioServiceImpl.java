@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,12 +30,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario cadastrar(Usuario usuario) {
         this.salvar(usuario);
         return usuario;
-    }
-
-    @Override
-    public List<Usuario> buscarTodos() {
-        // TODO criar lógica de busca
-        return List.of();
     }
 
     @Override

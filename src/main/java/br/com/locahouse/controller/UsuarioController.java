@@ -42,4 +42,10 @@ public class UsuarioController {
         Usuario usuario = usuarioService.atualizar(id, UsuarioMapper.usuarioPutDtoToEntity(dto));
         return ResponseEntity.ok(UsuarioMapper.entityToUsuarioGetDto(usuario));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        usuarioService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

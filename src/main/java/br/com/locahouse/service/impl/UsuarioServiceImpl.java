@@ -49,7 +49,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void deletar(Integer id) {
-        // TODO criar lógica de deleção
+        this.repository.delete(this.buscarPeloId(id));
     }
 
     private void salvar(Usuario usuario) {

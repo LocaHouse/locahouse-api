@@ -22,7 +22,7 @@ public class Usuario {
     @Column(length = 11, unique = true, nullable = false)
     private String cpf;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 60, nullable = false)
     private String senha;
 
     @Column(nullable = false)

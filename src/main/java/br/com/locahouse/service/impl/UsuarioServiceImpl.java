@@ -6,10 +6,15 @@ import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
-import br.com.locahouse.service.UsuarioService;
+import br.com.locahouse.security.authentication.JwtTokenService;
+import br.com.locahouse.security.config.SecurityConfiguration;
+import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,17 +22,41 @@ import java.time.Period;
 import java.util.Optional;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioService {
 
     private final UsuarioRepository repository;
 
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtTokenService jwtTokenService;
+
+    private final SecurityConfiguration securityConfiguration;
+
     @Autowired
-    private UsuarioServiceImpl(UsuarioRepository repository) {
+    private UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
         this.repository = repository;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenService = jwtTokenService;
+        this.securityConfiguration = securityConfiguration;
+    }
+
+    public String autenticarUsuario(String email, String senha) {
+        // Cria um objeto de autenticação com o email e a senha do usuário
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, senha);
+
+        // Autentica o usuário com as credenciais fornecidas
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+        // Obtém o objeto UserDetails do usuário autenticado
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        // Retorna um token JWT para o usuário autenticado
+        return jwtTokenService.generateToken(userDetails);
     }
 
     @Override
     public Usuario cadastrar(Usuario usuario) {
+        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
         this.salvar(usuario);
         return usuario;
     }
@@ -35,6 +64,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario buscarPeloId(Integer id) {
         return this.repository.findById(id).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
+    }
+
+    @Override
+    public Usuario buscarPeloEmail(String email) {
+        return this.repository.findByEmail(email).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
     }
 
     @Override

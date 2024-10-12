@@ -41,6 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         this.securityConfiguration = securityConfiguration;
     }
 
+    @Override
     public String fazerLogin(String email, String senha) {
         Usuario usuario = this.repository.findByEmail(email).orElse(null);
         if (usuario == null)
@@ -84,6 +85,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void deletar(Integer id) {
         this.repository.delete(this.buscarPeloId(id));
+    }
+
+    @Override
+    public void atualizarSenha(Integer id, String senhaAtual, String novaSenha) {
+        Usuario usuario = this.buscarPeloId(id);
+        if (!id.equals(usuario.getId()))
+            throw new BusinessException("Os identificadores devem ser iguais.", HttpStatus.CONFLICT);
+        if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha()))
+            throw new BusinessException("Senha atual incorreta.", HttpStatus.UNAUTHORIZED);
+        usuario.setSenha(securityConfiguration.passwordEncoder().encode(novaSenha));
+        this.salvar(usuario);
     }
 
     private void salvar(Usuario usuario) {

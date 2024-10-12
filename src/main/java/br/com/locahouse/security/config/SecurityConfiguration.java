@@ -34,7 +34,8 @@ public class SecurityConfiguration {
     public static final String[] ENDPOINTS_COM_AUTENTICACAO = {
             "/api/v1/usuarios/buscar/*",
             "/api/v1/usuarios/atualizar/*",
-            "/api/v1/usuarios/deletar/*"
+            "/api/v1/usuarios/deletar/*",
+            "/api/v1/usuarios/atualizar-senha/*"
     };
 
     @Bean

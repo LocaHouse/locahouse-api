@@ -12,7 +12,7 @@ public record UsuarioPostLoginDto(
         String email,
 
         @NotBlank(message = "A senha é obrigatória.")
-        @Size(message = "A senha deve ter entre 8 a 50 caracteres.", min = 8, max = 50)
+        @Size(message = "A senha deve ter entre 8 a 60 caracteres.", min = 8, max = 60)
         String senha
 ) {
 }

@@ -1,17 +1,17 @@
 CREATE TABLE usuarios(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 
-	cpf VARCHAR(11) UNIQUE NOT NULL,
-
-	senha VARCHAR(60) NOT NULL,
+	cpf VARCHAR(14) UNIQUE NOT NULL,
 
 	nome VARCHAR(255) NOT NULL,
 
 	data_nascimento DATE NOT NULL,
 
+	telefone VARCHAR(15) UNIQUE NOT NULL,
+
 	email VARCHAR(255) UNIQUE NOT NULL,
 
-	telefone VARCHAR(11) UNIQUE NOT NULL
+	senha VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE ceps(
@@ -44,7 +44,7 @@ CREATE TABLE imoveis(
 	CHECK (tamanho >= 0),
 
 	usuario_id INT NOT NULL,
-	FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+	FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
 
 	cep_id INT NOT NULL,
 	FOREIGN KEY(cep_id) REFERENCES ceps(id)
@@ -66,24 +66,7 @@ CREATE TABLE comodos_imoveis(
 	FOREIGN KEY(comodo_id) REFERENCES comodos(id),
 
 	imovel_id INT NOT NULL,
-	FOREIGN KEY(imovel_id) REFERENCES imoveis(id),
+	FOREIGN KEY(imovel_id) REFERENCES imoveis(id) ON DELETE CASCADE,
 
 	UNIQUE(comodo_id, imovel_id)
-);
-
-CREATE TABLE locacoes(
-	id INT PRIMARY KEY AUTO_INCREMENT,
-
-	data_inicio DATE NOT NULL,
-
-	data_fim DATE,
-
-	valor DECIMAL(14, 2) NOT NULL,
-	CHECK(valor >= 0),
-
-	usuario_id INT NOT NULL,
-	FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
-
-	imovel_id INT NOT NULL,
-	FOREIGN KEY(imovel_id) REFERENCES imoveis(id)
 );

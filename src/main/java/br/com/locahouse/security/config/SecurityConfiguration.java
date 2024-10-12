@@ -31,23 +31,26 @@ public class SecurityConfiguration {
             "/api/v1/usuarios/cadastrar"
     };
 
-    // Endpoints que requerem autenticação para serem acessados
     public static final String[] ENDPOINTS_COM_AUTENTICACAO = {
             "/api/v1/usuarios/buscar/*",
-            "api/v1/usuarios/atualizar/*",
-            "api/v1/usuarios/deletar/*"
+            "/api/v1/usuarios/atualizar/*",
+            "/api/v1/usuarios/deletar/*"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable) // Desativa a proteção contra CSRF
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Configura a política de criação de sessão como stateless
-                .authorizeHttpRequests(authz -> authz // Habilita a autorização para as requisições HTTP
+                // Desativa a proteção contra CSRF
+                .csrf(AbstractHttpConfigurer::disable)
+                // Configura a política de criação de sessão como stateless
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // Habilita a autorização para as requisições HTTP
+                .authorizeHttpRequests(authz -> authz
                         .requestMatchers(ENDPOINTS_SEM_AUTENTICACAO).permitAll()
                         .requestMatchers(ENDPOINTS_COM_AUTENTICACAO).authenticated()
                         .anyRequest().denyAll())
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Filtro de autenticação personalizado
+                // Filtro de autenticação personalizado
+                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

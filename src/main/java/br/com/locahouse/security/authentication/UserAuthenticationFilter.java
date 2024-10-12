@@ -1,15 +1,18 @@
 package br.com.locahouse.security.authentication;
 
+import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,25 +38,61 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (checkIfEndpointIsNotPublic(request)) {
-            String token = recoveryToken(request); // Recupera o token do cabeçalho Authorization da requisição
+        response.setCharacterEncoding("UTF-8");
+
+        String requestUri = request.getRequestURI();
+        if (verificarEndpointComAutenticacao(requestUri)) {
+            String token = recuperarToken(request);
             if (token != null) {
-                String subject = jwtTokenService.getSubjectFromToken(token); // Obtém o assunto (neste caso, o nome de usuário) do token
-                Usuario user = usuarioRepository.findByEmail(subject).get();      // Busca o usuário pelo email (que é o assunto do token)
-                UserDetailsImpl userDetails = new UserDetailsImpl(user);     // Cria um UserDetails com o usuário encontrado
+                try {
+                    Usuario usuario = usuarioRepository.findByEmail(jwtTokenService.recuperarSubject(token)).get();
+                    if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.getWriter().write("Acesso ao recurso negado.");
+                        return;
+                    }
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()); // Cria um objeto de autenticação do Spring Security
+                    UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication); // Define o objeto de autenticação no contexto de segurança do Spring Security
+                    // Cria um objeto de autenticação do Spring Security
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+
+                    // Define o objeto de autenticação no contexto de segurança do Spring Security
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (JWTVerificationException e) {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.getWriter().write("Token inválido.");
+                    return;
+                }
             } else {
-                throw new RuntimeException("O token está ausente.");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.getWriter().write("O token está ausente.");
+                return;
             }
+        } else if (!verificarEndpointSemAutenticacao(requestUri)) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.getWriter().write("Recurso não encontrado.");
+            return;
         }
-        filterChain.doFilter(request, response); // Continua o processamento da requisição
+
+        filterChain.doFilter(request, response);
     }
 
-    // Recupera o token do cabeçalho Authorization da requisição
-    private String recoveryToken(HttpServletRequest request) {
+    private boolean verificarEndpointComAutenticacao(String requestUri) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return Arrays.stream(SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO).anyMatch(
+                pattern -> pathMatcher.match(pattern, requestUri)
+        );
+    }
+
+    private boolean verificarEndpointSemAutenticacao(String requestUri) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+        return Arrays.stream(SecurityConfiguration.ENDPOINTS_SEM_AUTENTICACAO).anyMatch(
+                pattern -> pathMatcher.match(pattern, requestUri)
+        );
+    }
+
+    private String recuperarToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");
@@ -61,12 +100,11 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    // Verifica se o endpoint requer autenticação antes de processar a requisição
-    private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        AntPathMatcher pathMatcher = new AntPathMatcher();
-        return Arrays.stream(SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO).anyMatch(
-                pattern -> pathMatcher.match(pattern, requestURI)
-        );
+    /**
+     * Retorna a última parte da URI, referente ao ID do usuário.
+     */
+    public Integer extrairIdUsuarioDaUri(String requestUri) {
+        String[] partesUri = requestUri.split("/");
+        return Integer.parseInt(partesUri[partesUri.length - 1]); //
     }
 }

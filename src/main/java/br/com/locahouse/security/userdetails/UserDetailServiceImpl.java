@@ -1,10 +1,8 @@
 package br.com.locahouse.security.userdetails;
 
-import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,9 +20,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = this.repository.findByEmail(username).orElseThrow(
-                () -> new BusinessException("E-mail e/ou senha inválidos.", HttpStatus.UNAUTHORIZED)
-        );
+        Usuario usuario = this.repository.findByEmail(username).orElse(null);
         return new UserDetailsImpl(usuario);
     }
 }

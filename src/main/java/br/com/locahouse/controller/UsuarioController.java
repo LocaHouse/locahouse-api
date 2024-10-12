@@ -1,6 +1,6 @@
 package br.com.locahouse.controller;
 
-import br.com.locahouse.dto.jwt.RecoveryJwtTokenDto;
+import br.com.locahouse.dto.jwt.JwtTokenDto;
 import br.com.locahouse.dto.usuario.UsuarioGetDto;
 import br.com.locahouse.dto.usuario.UsuarioPostDto;
 import br.com.locahouse.dto.usuario.UsuarioPostLoginDto;
@@ -29,9 +29,9 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<RecoveryJwtTokenDto> authenticateUser(@RequestBody UsuarioPostLoginDto dto) {
-        String token = usuarioService.autenticarUsuario(dto.email(), dto.senha());
-        return new ResponseEntity<>(new RecoveryJwtTokenDto(token), HttpStatus.OK);
+    public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioPostLoginDto dto) {
+        String token = usuarioService.fazerLogin(dto.email(), dto.senha());
+        return new ResponseEntity<>(new JwtTokenDto(token), HttpStatus.OK);
     }
 
     @PostMapping("/cadastrar")

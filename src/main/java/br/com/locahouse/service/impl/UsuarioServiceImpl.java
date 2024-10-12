@@ -2,7 +2,6 @@ package br.com.locahouse.service.impl;
 
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
-import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
@@ -40,7 +39,7 @@ public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioServi
         this.securityConfiguration = securityConfiguration;
     }
 
-    public String autenticarUsuario(String email, String senha) {
+    public String fazerLogin(String email, String senha) {
         // Cria um objeto de autenticação com o email e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, senha);
 
@@ -51,7 +50,7 @@ public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioServi
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         // Retorna um token JWT para o usuário autenticado
-        return jwtTokenService.generateToken(userDetails);
+        return jwtTokenService.gerarToken(userDetails);
     }
 
     @Override
@@ -64,11 +63,6 @@ public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioServi
     @Override
     public Usuario buscarPeloId(Integer id) {
         return this.repository.findById(id).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
-    }
-
-    @Override
-    public Usuario buscarPeloEmail(String email) {
-        return this.repository.findByEmail(email).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
     }
 
     @Override
@@ -114,6 +108,6 @@ public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioServi
 
     private void verificarMaioridade(LocalDate dataNascimento) {
         if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
-            throw new UsuarioMenorDeIdadeException();
+            throw new BusinessException("É necessário ser maior de 18 anos para prosseguir.", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

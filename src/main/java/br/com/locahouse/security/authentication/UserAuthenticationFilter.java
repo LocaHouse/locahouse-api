@@ -1,6 +1,5 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
@@ -45,7 +44,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             String token = recuperarToken(request);
             if (token != null) {
                 try {
-                    Usuario usuario = usuarioRepository.findByEmail(jwtTokenService.recuperarSubject(token)).get();
+                    Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).get();
                     if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
                         response.setStatus(HttpStatus.FORBIDDEN.value());
                         response.getWriter().write("Acesso ao recurso negado.");

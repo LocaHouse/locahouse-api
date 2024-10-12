@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBusinessException(BadCredentialsException e, WebRequest request) {
-        ResponseError error = responseError(HttpStatus.UNAUTHORIZED, new ArrayList<>(Collections.singletonList(e.getMessage())));
+        ResponseError error = responseError(HttpStatus.UNAUTHORIZED, new ArrayList<>(Collections.singletonList(e.getMessage() + ".")));
         return handleExceptionInternal(e, error, headers(), HttpStatus.UNAUTHORIZED, request);
     }
 

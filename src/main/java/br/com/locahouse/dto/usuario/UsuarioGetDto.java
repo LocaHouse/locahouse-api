@@ -8,19 +8,25 @@ import java.util.List;
 
 public record UsuarioGetDto(
 
+        @JsonProperty("id")
         Integer id,
 
+        @JsonProperty("cpf")
         String cpf,
 
+        @JsonProperty("nome")
         String nome,
 
         @JsonProperty("data_nascimento")
         LocalDate dataNascimento,
 
+        @JsonProperty("telefone")
         String telefone,
 
+        @JsonProperty("email")
         String email,
 
+        @JsonProperty("imoveis")
         List<Imovel> imoveis
 ) {
 }

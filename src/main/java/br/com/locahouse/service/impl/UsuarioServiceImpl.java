@@ -8,10 +8,12 @@ import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.authentication.JwtTokenService;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import br.com.locahouse.service.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @Service
-public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioService {
+public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
 
@@ -40,8 +42,12 @@ public class UsuarioServiceImpl implements br.com.locahouse.service.UsuarioServi
     }
 
     public String fazerLogin(String email, String senha) {
-        // Cria um objeto de autenticação com o email e a senha do usuário
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, senha);
+        Usuario usuario = this.repository.findByEmail(email).orElse(null);
+        if (usuario == null)
+            throw new BadCredentialsException("Usuário inexistente ou senha inválida");
+
+        // Cria um objeto de autenticação com o id e a senha do usuário
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(String.valueOf(usuario.getId()), senha);
 
         // Autentica o usuário com as credenciais fornecidas
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);

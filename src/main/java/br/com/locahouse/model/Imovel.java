@@ -43,7 +43,4 @@ public class Imovel {
 
     @OneToMany(mappedBy = "imovel")
     private List<ComodoDoImovel> comodos;
-
-    @OneToMany(mappedBy = "imovel")
-    private List<Locacao> locacoes;
 }

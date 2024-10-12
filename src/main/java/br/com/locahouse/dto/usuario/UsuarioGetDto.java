@@ -20,11 +20,11 @@ public record UsuarioGetDto(
         @JsonProperty("data_nascimento")
         LocalDate dataNascimento,
 
-        @JsonProperty("email")
-        String email,
-
         @JsonProperty("telefone")
         String telefone,
+
+        @JsonProperty("email")
+        String email,
 
         @JsonProperty("imoveis")
         List<Imovel> imoveis

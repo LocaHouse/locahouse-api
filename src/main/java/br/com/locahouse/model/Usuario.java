@@ -19,11 +19,8 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 11, unique = true, nullable = false)
+    @Column(length = 14, unique = true, nullable = false)
     private String cpf;
-
-    @Column(length = 50, nullable = false)
-    private String senha;
 
     @Column(nullable = false)
     private String nome;
@@ -31,11 +28,14 @@ public class Usuario {
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
+    @Column(length = 15, unique = true, nullable = false)
+    private String telefone;
+
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(length = 11, unique = true, nullable = false)
-    private String telefone;
+    @Column(length = 60, nullable = false)
+    private String senha;
 
     @OneToMany(mappedBy = "usuario")
     private List<Imovel> imoveis;

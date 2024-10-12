@@ -2,14 +2,20 @@ package br.com.locahouse.service.impl;
 
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
-import br.com.locahouse.exception.UsuarioMenorDeIdadeException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
+import br.com.locahouse.security.authentication.JwtTokenService;
+import br.com.locahouse.security.config.SecurityConfiguration;
+import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import br.com.locahouse.service.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,13 +27,41 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
 
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtTokenService jwtTokenService;
+
+    private final SecurityConfiguration securityConfiguration;
+
     @Autowired
-    private UsuarioServiceImpl(UsuarioRepository repository) {
+    private UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
         this.repository = repository;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenService = jwtTokenService;
+        this.securityConfiguration = securityConfiguration;
+    }
+
+    public String fazerLogin(String email, String senha) {
+        Usuario usuario = this.repository.findByEmail(email).orElse(null);
+        if (usuario == null)
+            throw new BadCredentialsException("Usuário inexistente ou senha inválida");
+
+        // Cria um objeto de autenticação com o id e a senha do usuário
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(String.valueOf(usuario.getId()), senha);
+
+        // Autentica o usuário com as credenciais fornecidas
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+
+        // Obtém o objeto UserDetails do usuário autenticado
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        // Retorna um token JWT para o usuário autenticado
+        return jwtTokenService.gerarToken(userDetails);
     }
 
     @Override
     public Usuario cadastrar(Usuario usuario) {
+        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
         this.salvar(usuario);
         return usuario;
     }
@@ -80,6 +114,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void verificarMaioridade(LocalDate dataNascimento) {
         if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
-            throw new UsuarioMenorDeIdadeException();
+            throw new BusinessException("É necessário ser maior de 18 anos para prosseguir.", HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

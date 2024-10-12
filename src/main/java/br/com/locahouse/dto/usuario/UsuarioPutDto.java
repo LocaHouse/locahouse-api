@@ -12,7 +12,7 @@ public record UsuarioPutDto(
         Integer id,
 
         @NotBlank(message = "O CPF é obrigatório.")
-        @Size(message = "O CPF deve ter 11 números.", min = 11, max = 11)
+        @Size(message = "O CPF deve ter 14 caracteres.", min = 14, max = 14)
         String cpf,
 
         @NotBlank(message = "O nome é obrigatório.")
@@ -24,13 +24,13 @@ public record UsuarioPutDto(
         @JsonProperty("data_nascimento")
         LocalDate dataNascimento,
 
+        @NotBlank(message = "O telefone é obrigatório.")
+        @Size(message = "O telefone deve ter 15 caracteres.", min = 15, max = 15)
+        String telefone,
+
         @NotBlank(message = "O e-mail é obrigatório.")
         @Size(message = "O e-mail pode ter no máximo 255 caracteres.", max = 255)
         @Email(message = "O e-mail deve ser válido.")
-        String email,
-
-        @NotBlank(message = "O telefone é obrigatório.")
-        @Size(message = "O telefone deve ter 11 números.", min = 11, max = 11)
-        String telefone
+        String email
 ) {
 }

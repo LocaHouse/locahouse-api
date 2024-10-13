@@ -16,7 +16,7 @@ public class Cep {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 8, unique = true, nullable = false)
+    @Column(length = 9, unique = true, nullable = false)
     private String numero;
 
     @Column(length = 2, nullable = false)

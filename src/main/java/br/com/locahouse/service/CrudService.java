@@ -1,6 +1,6 @@
 package br.com.locahouse.service;
 
-public interface CrudService<T, ID> {
+interface CrudService<T, ID> {
 
     T cadastrar(T entidade);
 

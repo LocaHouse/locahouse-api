@@ -4,8 +4,9 @@ import br.com.locahouse.model.Cep;
 import br.com.locahouse.repository.CepRepository;
 import br.com.locahouse.service.CepService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class CepServiceImpl implements CepService {
 
     private final CepRepository repository;

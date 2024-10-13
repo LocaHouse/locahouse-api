@@ -29,7 +29,7 @@ public class ViaCepServiceImpl implements ViaCepService {
     }
 
     public Cep consultar(String numeroCep) throws IOException {
-        HttpGet request = new HttpGet("https://viacep.com.br/ws/" + this.removerDigitoCep(numeroCep) + "/json");
+        HttpGet request = new HttpGet("https://viacep.com.br/ws/" + this.removerHifenCep(numeroCep) + "/json");
         CepGetViaCepDto cepGetViaCepDto = null;
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build()) {
             CloseableHttpResponse response = httpClient.execute(request);
@@ -49,7 +49,7 @@ public class ViaCepServiceImpl implements ViaCepService {
         return CepMapper.cepGetViaCepDtoToEntity(cepGetViaCepDto);
     }
 
-    private String removerDigitoCep(String numeroCep) {
+    private String removerHifenCep(String numeroCep) {
         return numeroCep.replace("-", "");
     }
 }

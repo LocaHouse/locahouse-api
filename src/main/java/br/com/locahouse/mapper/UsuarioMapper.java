@@ -16,11 +16,11 @@ public final class UsuarioMapper {
     public static Usuario usuarioPostDtoToEntity(UsuarioPostDto dto) {
         Usuario usuario = new Usuario();
         usuario.setCpf(dto.cpf());
-        usuario.setSenha(dto.senha());
         usuario.setNome(dto.nome());
         usuario.setDataNascimento(dto.dataNascimento());
-        usuario.setEmail(dto.email());
         usuario.setTelefone(dto.telefone());
+        usuario.setEmail(dto.email());
+        usuario.setSenha(dto.senha());
         return usuario;
     }
 
@@ -30,8 +30,8 @@ public final class UsuarioMapper {
         usuario.setCpf(dto.cpf());
         usuario.setNome(dto.nome());
         usuario.setDataNascimento(dto.dataNascimento());
-        usuario.setEmail(dto.email());
         usuario.setTelefone(dto.telefone());
+        usuario.setEmail(dto.email());
         return usuario;
     }
 
@@ -41,8 +41,8 @@ public final class UsuarioMapper {
                 usuario.getCpf(),
                 usuario.getNome(),
                 usuario.getDataNascimento(),
-                usuario.getEmail(),
                 usuario.getTelefone(),
+                usuario.getEmail(),
                 Optional.ofNullable(usuario.getImoveis()).orElse(Collections.emptyList())
         );
     }

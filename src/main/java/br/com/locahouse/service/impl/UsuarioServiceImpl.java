@@ -74,8 +74,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario atualizar(Integer id, Usuario usuario) {
-        if (!id.equals(usuario.getId()))
-            throw new BusinessException("Os identificadores devem ser iguais.", HttpStatus.CONFLICT);
         Usuario usuarioParaAtualizar = this.buscarPeloId(id);
         BeanUtils.copyProperties(usuario, usuarioParaAtualizar, "id", "senha");
         this.salvar(usuarioParaAtualizar);
@@ -90,8 +88,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void atualizarSenha(Integer id, String senhaAtual, String novaSenha) {
         Usuario usuario = this.buscarPeloId(id);
-        if (!id.equals(usuario.getId()))
-            throw new BusinessException("Os identificadores devem ser iguais.", HttpStatus.CONFLICT);
         if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha()))
             throw new BusinessException("Senha atual incorreta.", HttpStatus.UNAUTHORIZED);
         usuario.setSenha(securityConfiguration.passwordEncoder().encode(novaSenha));
@@ -100,8 +96,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void salvar(Usuario usuario) {
         this.verificarUnicidadeCpf(usuario.getId(), usuario.getCpf());
-        this.verificarUnicidadeEmail(usuario.getId(), usuario.getEmail());
         this.verificarUnicidadeTelefone(usuario.getId(), usuario.getTelefone());
+        this.verificarUnicidadeEmail(usuario.getId(), usuario.getEmail());
         this.verificarMaioridade(usuario.getDataNascimento());
         this.repository.save(usuario);
     }
@@ -112,16 +108,16 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new UniqueConstraintVioladaException("CPF");
     }
 
-    private void verificarUnicidadeEmail(Integer id, String email) {
-        Optional<Usuario> usuario = this.repository.findByEmail(email);
-        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
-            throw new UniqueConstraintVioladaException("E-mail");
-    }
-
     private void verificarUnicidadeTelefone(Integer id, String telefone) {
         Optional<Usuario> usuario = this.repository.findByTelefone(telefone);
         if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
             throw new UniqueConstraintVioladaException("Telefone");
+    }
+
+    private void verificarUnicidadeEmail(Integer id, String email) {
+        Optional<Usuario> usuario = this.repository.findByEmail(email);
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
+            throw new UniqueConstraintVioladaException("E-mail");
     }
 
     private void verificarMaioridade(LocalDate dataNascimento) {

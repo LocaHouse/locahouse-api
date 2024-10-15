@@ -27,6 +27,9 @@ public class SecurityConfiguration {
     }
 
     public static final String[] ENDPOINTS_SEM_AUTENTICACAO = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
             "/api/v1/usuarios/login",
             "/api/v1/usuarios/cadastrar"
     };

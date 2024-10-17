@@ -1,10 +1,12 @@
 package br.com.locahouse.security.authentication;
 
+import br.com.locahouse.dto.error.ErroDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
@@ -29,14 +32,18 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final UsuarioRepository usuarioRepository;
 
+    private final Gson gson;
+
     @Autowired
-    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository) {
+    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, Gson gson) {
         this.jwtTokenService = jwtTokenService;
         this.usuarioRepository = usuarioRepository;
+        this.gson = gson;
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String requestUri = request.getRequestURI();
@@ -46,31 +53,22 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 try {
                     Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).get();
                     if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
-                        response.setStatus(HttpStatus.FORBIDDEN.value());
-                        response.getWriter().write("Acesso ao recurso negado.");
+                        gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
                         return;
                     }
-
                     UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
-
-                    // Cria um objeto de autenticação do Spring Security
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
-
-                    // Define o objeto de autenticação no contexto de segurança do Spring Security
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()); // Cria um objeto de autenticação do Spring Security
+                    SecurityContextHolder.getContext().setAuthentication(authentication);                                                                             // Define o objeto de autenticação no contexto de segurança do Spring Security
                 } catch (JWTVerificationException e) {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.getWriter().write("Token inválido.");
+                    gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
                     return;
                 }
             } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.getWriter().write("O token está ausente.");
+                gerarErro(response, HttpStatus.UNAUTHORIZED, "O token está ausente.");
                 return;
             }
         } else if (!verificarEndpointSemAutenticacao(requestUri)) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.getWriter().write("Recurso não encontrado.");
+            gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
             return;
         }
 
@@ -99,11 +97,19 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    /**
-     * Retorna a última parte da URI, referente ao ID do usuário.
-     */
-    public Integer extrairIdUsuarioDaUri(String requestUri) {
+    private Integer extrairIdUsuarioDaUri(String requestUri) {
         String[] partesUri = requestUri.split("/");
         return Integer.parseInt(partesUri[partesUri.length - 1]); //
+    }
+
+    private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {
+        response.setStatus(httpStatus.value());
+        String jsonResponse = gson.toJson(
+                new ErroDto(
+                        httpStatus,
+                        List.of(mensagem)
+                )
+        );
+        response.getWriter().write(jsonResponse);
     }
 }

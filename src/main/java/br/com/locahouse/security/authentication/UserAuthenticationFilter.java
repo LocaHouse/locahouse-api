@@ -1,6 +1,6 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.dto.error.ErroDto;
+import br.com.locahouse.dto.erro.ErroDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;

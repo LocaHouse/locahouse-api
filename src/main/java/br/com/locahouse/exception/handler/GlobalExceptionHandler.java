@@ -1,6 +1,6 @@
 package br.com.locahouse.exception.handler;
 
-import br.com.locahouse.dto.error.ErroDto;
+import br.com.locahouse.dto.erro.ErroDto;
 import br.com.locahouse.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

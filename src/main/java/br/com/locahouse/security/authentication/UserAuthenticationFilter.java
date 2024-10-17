@@ -52,8 +52,13 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             if (token != null) {
                 try {
                     Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).get();
-                    if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
-                        gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
+                    try {
+                        if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
+                            gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
                         return;
                     }
                     UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
@@ -97,7 +102,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private Integer extrairIdUsuarioDaUri(String requestUri) {
+    private Integer extrairIdUsuarioDaUri(String requestUri) throws NumberFormatException {
         String[] partesUri = requestUri.split("/");
         return Integer.parseInt(partesUri[partesUri.length - 1]); //
     }

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,7 +23,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @Autowired
-    private UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
@@ -48,7 +47,7 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioPostLoginDto dto) {
         String token = this.usuarioService.fazerLogin(dto.email(), dto.senha());
-        return new ResponseEntity<>(new JwtTokenDto(token), HttpStatus.OK);
+        return ResponseEntity.ok(new JwtTokenDto(token));
     }
 
     @Operation(
@@ -77,10 +76,10 @@ public class UsuarioController {
             )
     })
     @PostMapping("/cadastrar")
-    public ResponseEntity<UsuarioGetDto> cadastrar(@Valid @RequestBody UsuarioPostDto dto) {
+    public ResponseEntity<Void> cadastrar(@Valid @RequestBody UsuarioPostDto dto) {
         Usuario usuario = this.usuarioService.cadastrar(UsuarioMapper.usuarioPostDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
-        return ResponseEntity.created(location).body(UsuarioMapper.entityToUsuarioGetDto(usuario));
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(
@@ -188,7 +187,7 @@ public class UsuarioController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
+                    responseCode = "204",
                     description = "Senha atualizada."
             ),
             @ApiResponse(
@@ -207,6 +206,6 @@ public class UsuarioController {
     @PatchMapping("atualizar-senha/{id}")
     public ResponseEntity<Void> atualizarSenha(@PathVariable Integer id, @Valid @RequestBody UsuarioPatchAtualizacaoSenhaDto dto) {
         this.usuarioService.atualizarSenha(id, dto.senhaAtual(), dto.novaSenha());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

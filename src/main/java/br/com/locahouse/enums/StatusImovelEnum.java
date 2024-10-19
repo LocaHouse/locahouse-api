@@ -1,5 +1,10 @@
 package br.com.locahouse.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public enum StatusImovelEnum {
 
     DISPONIVEL(0, "Disponível."),
@@ -8,17 +13,4 @@ public enum StatusImovelEnum {
 
     private final int codigo;
     private final String descricao;
-
-    StatusImovelEnum(int codigo, String descricao) {
-        this.codigo = codigo;
-        this.descricao = descricao;
-    }
-
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
 }

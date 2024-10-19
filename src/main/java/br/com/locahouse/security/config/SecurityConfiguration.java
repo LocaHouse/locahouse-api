@@ -38,7 +38,11 @@ public class SecurityConfiguration {
             "/api/v1/usuarios/buscar/*",
             "/api/v1/usuarios/atualizar/*",
             "/api/v1/usuarios/deletar/*",
-            "/api/v1/usuarios/atualizar-senha/*"
+            "/api/v1/usuarios/atualizar-senha/*",
+            "/api/v1/imoveis/cadastrar/*",
+            "/api/v1/imoveis/buscar/*",
+            "/api/v1/imoveis/atualizar/*",
+            "/api/v1/imoveis/deletar/*"
     };
 
     @Bean

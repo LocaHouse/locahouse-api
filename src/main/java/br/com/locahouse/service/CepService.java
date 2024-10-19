@@ -6,5 +6,7 @@ public interface CepService {
 
     Cep salvar(Cep cep);
 
+    Cep buscarPeloNumero(String numero);
+
     boolean verificarExistencia(String numeroCep);
 }

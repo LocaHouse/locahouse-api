@@ -2,6 +2,7 @@ package br.com.locahouse.security.authentication;
 
 import br.com.locahouse.dto.erro.ErroDto;
 import br.com.locahouse.model.Usuario;
+import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
@@ -24,6 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
@@ -32,12 +34,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final UsuarioRepository usuarioRepository;
 
+    private final ImovelRepository imovelRepository;
+
     private final Gson gson;
 
     @Autowired
-    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, Gson gson) {
+    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, Gson gson) {
         this.jwtTokenService = jwtTokenService;
         this.usuarioRepository = usuarioRepository;
+        this.imovelRepository = imovelRepository;
         this.gson = gson;
     }
 
@@ -51,7 +56,11 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             String token = recuperarToken(request);
             if (token != null) {
                 try {
-                    Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).get();
+                    Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
+                    if (usuario == null) {
+                        gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
+                        return;
+                    }
                     try {
                         if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
                             gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
@@ -104,7 +113,16 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private Integer extrairIdUsuarioDaUri(String requestUri) throws NumberFormatException {
         String[] partesUri = requestUri.split("/");
-        return Integer.parseInt(partesUri[partesUri.length - 1]); //
+        String tipoRecurso = partesUri[partesUri.length - 3];
+        String operacao = partesUri[partesUri.length - 2];
+        Integer id = Integer.parseInt(partesUri[partesUri.length - 1]);
+        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar")) {
+            if (this.imovelRepository.existsById(id)) {
+                return this.imovelRepository.findById(id).get().getUsuario().getId();
+            }
+            return null;
+        }
+        return id;
     }
 
     private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {

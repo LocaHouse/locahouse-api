@@ -1,6 +1,5 @@
 package br.com.locahouse.dto.usuario;
 
-import br.com.locahouse.model.Imovel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
@@ -27,6 +26,6 @@ public record UsuarioGetDto(
         String email,
 
         @JsonProperty("imoveis")
-        List<Imovel> imoveis
+        List<UsuarioGetImovelDto> imoveis
 ) {
 }

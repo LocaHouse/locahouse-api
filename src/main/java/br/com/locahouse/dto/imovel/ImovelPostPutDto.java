@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record ImovelPostDto(
+public record ImovelPostPutDto(
 
         @NotNull
         @Min(value = 0, message = MENSAGEM_STATUS_INVALIDO)

@@ -11,6 +11,15 @@ public enum StatusImovelEnum {
     ALUGADO(1, "Alugado."),
     INDISPONIVEL(2, "Indisponível.");
 
-    private final int codigo;
+    private final Integer codigo;
     private final String descricao;
+
+    public static StatusImovelEnum bucarEnumPeloCodigo(Integer codigo) throws IllegalArgumentException {
+        for (StatusImovelEnum status : StatusImovelEnum.values()) {
+            if (status.getCodigo().equals(codigo)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido: " + codigo);
+    }
 }

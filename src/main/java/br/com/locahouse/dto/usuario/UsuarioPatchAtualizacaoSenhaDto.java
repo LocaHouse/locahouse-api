@@ -8,10 +8,6 @@ import jakarta.validation.constraints.Size;
 
 public record UsuarioPatchAtualizacaoSenhaDto(
 
-        @NotNull(message = "O ID é obrigatório.")
-        @Positive(message = "O ID deve ser positivo.")
-        Integer id,
-
         @NotBlank(message = "A senha atual é obrigatória.")
         @Size(message = "A senha atual deve ter entre 8 a 60 caracteres.", min = 8, max = 60)
         @JsonProperty(value = "senha_atual")

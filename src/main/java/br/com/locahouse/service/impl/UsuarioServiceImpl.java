@@ -43,9 +43,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public String fazerLogin(String email, String senha) {
-        Usuario usuario = this.repository.findByEmail(email).orElse(null);
-        if (usuario == null)
-            throw new BadCredentialsException("Usuário inexistente ou senha inválida");
+        Usuario usuario = this.repository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Usuário inexistente ou senha inválida"));
 
         // Cria um objeto de autenticação com o id e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(String.valueOf(usuario.getId()), senha);

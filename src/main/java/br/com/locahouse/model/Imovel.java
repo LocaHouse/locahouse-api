@@ -1,5 +1,6 @@
 package br.com.locahouse.model;
 
+import br.com.locahouse.enums.StatusImovelEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
@@ -18,6 +18,10 @@ public class Imovel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Setter(AccessLevel.NONE)
+    @Column(nullable = false)
+    private Integer status;
 
     @Column(length = 500, nullable = false)
     private String descricao;
@@ -43,4 +47,21 @@ public class Imovel {
 
     @OneToMany(mappedBy = "imovel")
     private List<ComodoDoImovel> comodos;
+
+    public Imovel(Integer id, StatusImovelEnum status, String descricao, String numero, String complemento, BigDecimal valor, BigDecimal tamanho, Usuario usuario, Cep cep, List<ComodoDoImovel> comodos) {
+        this.id = id;
+        this.status = status.getCodigo();
+        this.descricao = descricao;
+        this.numero = numero;
+        this.complemento = complemento;
+        this.valor = valor;
+        this.tamanho = tamanho;
+        this.usuario = usuario;
+        this.cep = cep;
+        this.comodos = comodos;
+    }
+
+    public void setStatus(StatusImovelEnum status) {
+        this.status = status.getCodigo();
+    }
 }

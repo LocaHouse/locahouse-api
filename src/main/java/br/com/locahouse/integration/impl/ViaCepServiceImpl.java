@@ -1,10 +1,10 @@
-package br.com.locahouse.service.impl;
+package br.com.locahouse.integration.impl;
 
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.mapper.CepMapper;
 import br.com.locahouse.model.Cep;
 import br.com.locahouse.dto.cep.CepGetViaCepDto;
-import br.com.locahouse.service.ViaCepService;
+import br.com.locahouse.integration.ViaCepService;
 import com.google.gson.Gson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;

@@ -1,12 +1,14 @@
 package br.com.locahouse.mapper;
 
 import br.com.locahouse.dto.usuario.UsuarioGetDto;
+import br.com.locahouse.dto.usuario.UsuarioGetImovelDto;
 import br.com.locahouse.dto.usuario.UsuarioPostDto;
 import br.com.locahouse.dto.usuario.UsuarioPutDto;
 import br.com.locahouse.model.Usuario;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class UsuarioMapper {
 
@@ -26,7 +28,6 @@ public final class UsuarioMapper {
 
     public static Usuario usuarioPutDtoToEntity(UsuarioPutDto dto) {
         Usuario usuario = new Usuario();
-        usuario.setId(dto.id());
         usuario.setCpf(dto.cpf());
         usuario.setNome(dto.nome());
         usuario.setDataNascimento(dto.dataNascimento());
@@ -43,7 +44,18 @@ public final class UsuarioMapper {
                 usuario.getDataNascimento(),
                 usuario.getTelefone(),
                 usuario.getEmail(),
-                Optional.ofNullable(usuario.getImoveis()).orElse(Collections.emptyList())
+                Optional.ofNullable(usuario.getImoveis()).orElse(Collections.emptyList()).stream().map(
+                        (imovel) -> new UsuarioGetImovelDto(
+                                imovel.getId(),
+                                imovel.getStatus(),
+                                imovel.getDescricao(),
+                                imovel.getNumero(),
+                                imovel.getComplemento(),
+                                imovel.getValor(),
+                                imovel.getTamanho(),
+                                imovel.getCep()
+                        )
+                ).collect(Collectors.toList())
         );
     }
 }

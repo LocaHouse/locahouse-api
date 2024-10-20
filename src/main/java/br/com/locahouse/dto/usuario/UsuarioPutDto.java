@@ -7,10 +7,6 @@ import java.time.LocalDate;
 
 public record UsuarioPutDto(
 
-        @NotNull(message = "O ID é obrigatório.")
-        @Positive(message = "O ID deve ser positivo.")
-        Integer id,
-
         @NotBlank(message = "O CPF é obrigatório.")
         @Size(message = "O CPF deve ter 14 caracteres.", min = 14, max = 14)
         String cpf,

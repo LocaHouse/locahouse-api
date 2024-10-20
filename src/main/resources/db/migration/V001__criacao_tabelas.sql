@@ -31,6 +31,9 @@ CREATE TABLE ceps(
 CREATE TABLE imoveis(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 
+	status INT NOT NULL,
+	CHECK (status IN(0, 1, 2)),
+
 	descricao VARCHAR(500) NOT NULL,
 
 	numero VARCHAR(5) NOT NULL,

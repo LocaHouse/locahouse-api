@@ -1,4 +1,4 @@
-package br.com.locahouse.service;
+package br.com.locahouse.integration;
 
 import br.com.locahouse.model.Cep;
 

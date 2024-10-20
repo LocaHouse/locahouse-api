@@ -34,7 +34,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final SecurityConfiguration securityConfiguration;
 
     @Autowired
-    private UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
+    public UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
         this.repository = repository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
@@ -42,10 +42,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Usuario cadastrar(Usuario usuario) {
+        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
+        this.salvar(usuario);
+        return usuario;
+    }
+
+    @Override
     public String fazerLogin(String email, String senha) {
-        Usuario usuario = this.repository.findByEmail(email).orElse(null);
-        if (usuario == null)
-            throw new BadCredentialsException("Usuário inexistente ou senha inválida");
+        Usuario usuario = this.repository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Usuário inexistente ou senha inválida"));
 
         // Cria um objeto de autenticação com o id e a senha do usuário
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(String.valueOf(usuario.getId()), senha);
@@ -58,13 +63,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         // Retorna um token JWT para o usuário autenticado
         return jwtTokenService.gerarToken(userDetails);
-    }
-
-    @Override
-    public Usuario cadastrar(Usuario usuario) {
-        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
-        this.salvar(usuario);
-        return usuario;
     }
 
     @Override
@@ -81,17 +79,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void deletar(Integer id) {
-        this.repository.delete(this.buscarPeloId(id));
-    }
-
-    @Override
     public void atualizarSenha(Integer id, String senhaAtual, String novaSenha) {
         Usuario usuario = this.buscarPeloId(id);
         if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha()))
             throw new BusinessException("Senha atual incorreta.", HttpStatus.UNAUTHORIZED);
         usuario.setSenha(securityConfiguration.passwordEncoder().encode(novaSenha));
         this.salvar(usuario);
+    }
+
+    @Override
+    public void deletar(Integer id) {
+        this.repository.delete(this.buscarPeloId(id));
     }
 
     private void salvar(Usuario usuario) {

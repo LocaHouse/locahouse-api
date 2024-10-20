@@ -34,11 +34,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final SecurityConfiguration securityConfiguration;
 
     @Autowired
-    private UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
+    public UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
         this.repository = repository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
         this.securityConfiguration = securityConfiguration;
+    }
+
+    @Override
+    public Usuario cadastrar(Usuario usuario) {
+        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
+        this.salvar(usuario);
+        return usuario;
     }
 
     @Override
@@ -59,13 +66,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario cadastrar(Usuario usuario) {
-        usuario.setSenha(securityConfiguration.passwordEncoder().encode(usuario.getSenha()));
-        this.salvar(usuario);
-        return usuario;
-    }
-
-    @Override
     public Usuario buscarPeloId(Integer id) {
         return this.repository.findById(id).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
     }
@@ -79,17 +79,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void deletar(Integer id) {
-        this.repository.delete(this.buscarPeloId(id));
-    }
-
-    @Override
     public void atualizarSenha(Integer id, String senhaAtual, String novaSenha) {
         Usuario usuario = this.buscarPeloId(id);
         if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha()))
             throw new BusinessException("Senha atual incorreta.", HttpStatus.UNAUTHORIZED);
         usuario.setSenha(securityConfiguration.passwordEncoder().encode(novaSenha));
         this.salvar(usuario);
+    }
+
+    @Override
+    public void deletar(Integer id) {
+        this.repository.delete(this.buscarPeloId(id));
     }
 
     private void salvar(Usuario usuario) {

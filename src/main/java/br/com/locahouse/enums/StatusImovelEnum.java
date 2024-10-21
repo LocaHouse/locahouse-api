@@ -14,12 +14,21 @@ public enum StatusImovelEnum {
     private final Integer codigo;
     private final String descricao;
 
-    public static StatusImovelEnum bucarEnumPeloCodigo(Integer codigo) throws IllegalArgumentException {
+    public static StatusImovelEnum bucarEnumPeloCodigo(Integer codigo) {
         for (StatusImovelEnum status : StatusImovelEnum.values()) {
             if (status.getCodigo().equals(codigo)) {
                 return status;
             }
         }
         throw new IllegalArgumentException("Código inválido: " + codigo);
+    }
+
+    public static boolean verificarExistencia(Integer codigo) {
+        for (StatusImovelEnum status : StatusImovelEnum.values()) {
+            if (status.getCodigo().equals(codigo)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

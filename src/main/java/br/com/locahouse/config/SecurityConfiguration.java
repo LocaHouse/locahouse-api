@@ -1,4 +1,4 @@
-package br.com.locahouse.security.config;
+package br.com.locahouse.config;
 
 import br.com.locahouse.security.authentication.UserAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,9 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/api/v1/usuarios/login",
-            "/api/v1/usuarios/cadastrar"
+            "/api/v1/usuarios/cadastrar",
+            "/api/v1/imoveis/buscar/*",
+            "/api/v1/imoveis/buscar-disponiveis"
     };
 
     public static final String[] ENDPOINTS_COM_AUTENTICACAO = {
@@ -40,9 +42,9 @@ public class SecurityConfiguration {
             "/api/v1/usuarios/deletar/*",
             "/api/v1/usuarios/atualizar-senha/*",
             "/api/v1/imoveis/cadastrar/*",
-            "/api/v1/imoveis/buscar/*",
             "/api/v1/imoveis/atualizar/*",
-            "/api/v1/imoveis/deletar/*"
+            "/api/v1/imoveis/deletar/*",
+            "/api/v1/imoveis/buscar-meus/*"
     };
 
     @Bean

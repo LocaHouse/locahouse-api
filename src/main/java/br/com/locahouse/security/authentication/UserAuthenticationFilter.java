@@ -4,7 +4,7 @@ import br.com.locahouse.dto.erro.ErroDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
-import br.com.locahouse.security.config.SecurityConfiguration;
+import br.com.locahouse.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
@@ -25,7 +25,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {

@@ -45,7 +45,7 @@ public final class UsuarioMapper {
                 usuario.getTelefone(),
                 usuario.getEmail(),
                 Optional.ofNullable(usuario.getImoveis()).orElse(Collections.emptyList()).stream().map(
-                        (imovel) -> new UsuarioGetImovelDto(
+                        imovel -> new UsuarioGetImovelDto(
                                 imovel.getId(),
                                 imovel.getStatus(),
                                 imovel.getDescricao(),

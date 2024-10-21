@@ -1,5 +1,7 @@
 package br.com.locahouse.service.impl;
 
+import br.com.locahouse.enums.StatusImovelEnum;
+import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
 import br.com.locahouse.integration.ViaCepService;
 import br.com.locahouse.model.Imovel;
@@ -10,6 +12,9 @@ import br.com.locahouse.service.UsuarioService;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +45,13 @@ public class ImovelServiceImpl implements ImovelService {
         imovel.setUsuario(this.usuarioService.buscarPeloId(usuarioId));
         this.salvar(imovel, numeroCep);
         return imovel;
+    }
+
+    @Override
+    public Page<Imovel> buscar(Pageable pageable, Integer id, Integer status) {
+        if (status != null && !StatusImovelEnum.verificarExistencia(status))
+            throw new BusinessException("Status inválido.", HttpStatus.UNPROCESSABLE_ENTITY);
+        return this.repository.buscar(pageable, id, status);
     }
 
     @Override

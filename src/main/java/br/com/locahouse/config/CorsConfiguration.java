@@ -14,6 +14,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
                 .allowedOrigins(System.getenv("URL_FRONTEND"))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedHeaders("*")
+                .exposedHeaders("Location")
                 .allowCredentials(true)
         ;
     }

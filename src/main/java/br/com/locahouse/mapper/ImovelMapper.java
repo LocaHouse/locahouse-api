@@ -11,7 +11,7 @@ public final class ImovelMapper {
     private ImovelMapper() {
     }
 
-    public static Imovel imovelPostDtoToEntity(ImovelPostPutDto dto) {
+    public static Imovel imovelPostPutDtoToEntity(ImovelPostPutDto dto) {
         Imovel imovel = new Imovel();
         imovel.setStatus(StatusImovelEnum.bucarEnumPeloCodigo(dto.status()));
         imovel.setDescricao(dto.descricao());

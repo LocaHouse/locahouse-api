@@ -7,7 +7,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
@@ -47,6 +46,9 @@ public class Imovel {
 
     @OneToMany(mappedBy = "imovel")
     private List<ComodoDoImovel> comodos;
+
+    public Imovel() {
+    }
 
     public Imovel(Integer id, StatusImovelEnum status, String descricao, String numero, String complemento, BigDecimal valor, BigDecimal tamanho, Usuario usuario, Cep cep, List<ComodoDoImovel> comodos) {
         this.id = id;

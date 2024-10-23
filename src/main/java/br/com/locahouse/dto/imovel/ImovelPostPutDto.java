@@ -1,13 +1,15 @@
 package br.com.locahouse.dto.imovel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ImovelPostPutDto(
 
-        @NotNull
+        @NotNull(message = "O status é obrigatório.")
         @Min(value = 0, message = MENSAGEM_STATUS_INVALIDO)
         @Max(value = 2, message = MENSAGEM_STATUS_INVALIDO)
         @JsonProperty("status")
@@ -28,20 +30,25 @@ public record ImovelPostPutDto(
         @JsonProperty("complemento")
         String complemento,
 
-        @NotNull
-        @PositiveOrZero(message = "O valor não pode ser negativo.")
+        @NotNull(message = "O valor é obrigatório.")
+        @Positive(message = "O valor deve ser positivo.")
         @JsonProperty("valor")
         BigDecimal valor,
 
-        @NotNull
-        @PositiveOrZero(message = "O tamanho não pode ser negativo.")
+        @NotNull(message = "O tamanho é obrigatório.")
+        @Positive(message = "O tamanho deve ser positivo.")
         @JsonProperty("tamanho")
         BigDecimal tamanho,
 
-        @NotNull
+        @NotNull(message = "O CEP é obrigatório.")
         @Size(message = "O CEP deve ter 9 caracteres.", min = 9, max = 9)
         @JsonProperty("numero_cep")
-        String numeroCep
+        String numeroCep,
+
+        @Valid
+        @NotEmpty(message = "Os cômodos do imovél são obrigatórios.")
+        @JsonProperty("comodos_imovel")
+        List<ImovelPostPutComodoDoImovelDto> comodosDoImovel
 ) {
 
     private static final String MENSAGEM_STATUS_INVALIDO = "O status deve ser 0, 1 ou 2.";

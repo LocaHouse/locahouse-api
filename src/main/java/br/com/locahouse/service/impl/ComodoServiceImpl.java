@@ -1,4 +1,4 @@
-/*package br.com.locahouse.service.impl;
+package br.com.locahouse.service.impl;
 
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
 import br.com.locahouse.model.Comodo;
@@ -20,4 +20,3 @@ public class ComodoServiceImpl implements ComodoService {
         return this.repository.findById(id).orElseThrow(() -> new RecursoNaoEcontradoException("Cômodo"));
     }
 }
-*/

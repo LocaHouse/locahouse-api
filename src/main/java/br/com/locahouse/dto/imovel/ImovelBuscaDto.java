@@ -1,9 +1,11 @@
 package br.com.locahouse.dto.imovel;
 
+import br.com.locahouse.dto.comododoimovel.ComodoDoImovelBuscaDto;
 import br.com.locahouse.model.Cep;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ImovelBuscaDto(
 
@@ -32,6 +34,9 @@ public record ImovelBuscaDto(
         ImovelBuscaDtoUsuario usuario,
 
         @JsonProperty("cep")
-        Cep cep
+        Cep cep,
+
+        @JsonProperty("comodos")
+        List<ComodoDoImovelBuscaDto> comodos
 ) {
 }

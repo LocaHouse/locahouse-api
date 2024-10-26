@@ -6,6 +6,9 @@ import br.com.locahouse.dto.imovel.ImovelCadastroAndAtualizacaoDto;
 import br.com.locahouse.enums.StatusImovelEnum;
 import br.com.locahouse.model.Imovel;
 
+import java.util.Collections;
+import java.util.Optional;
+
 public final class ImovelMapper {
 
     private ImovelMapper() {
@@ -37,7 +40,8 @@ public final class ImovelMapper {
                         imovel.getUsuario().getTelefone(),
                         imovel.getUsuario().getEmail()
                 ),
-                imovel.getCep()
+                imovel.getCep(),
+                Optional.ofNullable(imovel.getComodos()).orElse(Collections.emptyList()).stream().map(ComodoDoImovelMapper::entityToComodoDoImovelBuscaDto).toList()
         );
     }
 }

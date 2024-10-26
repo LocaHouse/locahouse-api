@@ -1,6 +1,6 @@
 package br.com.locahouse.dto.cep;
 
-public record CepGetViaCepDto(
+public record CepConsultaViaCepDto(
 
         String cep,
 

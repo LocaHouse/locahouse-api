@@ -71,6 +71,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Usuario buscarPeloEmail(String email) {
+        return this.repository.findByEmail(email).orElseThrow(() -> new RecursoNaoEcontradoException("Usuário"));
+    }
+
+    @Override
     public Usuario atualizar(Integer id, Usuario usuario) {
         Usuario usuarioParaAtualizar = this.buscarPeloId(id);
         BeanUtils.copyProperties(usuario, usuarioParaAtualizar, "id", "senha");

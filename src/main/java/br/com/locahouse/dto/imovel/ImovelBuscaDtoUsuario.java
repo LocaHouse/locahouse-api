@@ -2,7 +2,7 @@ package br.com.locahouse.dto.imovel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record ImovelGetUsuarioDto(
+public record ImovelBuscaDtoUsuario(
 
         @JsonProperty("id")
         Integer id,

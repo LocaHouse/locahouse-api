@@ -41,10 +41,10 @@ CREATE TABLE imoveis(
 	complemento VARCHAR(255),
 
 	valor DECIMAL(14, 2) NOT NULL,
-	CHECK (valor >= 0),
+	CHECK (valor > 0),
 
 	tamanho DECIMAL(8, 3) NOT NULL,
-	CHECK (tamanho >= 0),
+	CHECK (tamanho > 0),
 
 	usuario_id INT NOT NULL,
 	FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -63,7 +63,7 @@ CREATE TABLE comodos_imoveis(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 
 	quantidade INT NOT NULL,
-	CHECK(quantidade >= 0),
+	CHECK(quantidade > 0),
 
 	comodo_id INT NOT NULL,
 	FOREIGN KEY(comodo_id) REFERENCES comodos(id),

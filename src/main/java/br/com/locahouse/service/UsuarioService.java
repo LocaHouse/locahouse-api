@@ -10,6 +10,8 @@ public interface UsuarioService {
 
     Usuario buscarPeloId(Integer id);
 
+    Usuario buscarPeloEmail(String email);
+
     Usuario atualizar(Integer id, Usuario usuario);
 
     void atualizarSenha(Integer id, String senhaAtual, String novaSenha);

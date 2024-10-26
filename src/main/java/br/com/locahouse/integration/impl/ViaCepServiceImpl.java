@@ -3,7 +3,7 @@ package br.com.locahouse.integration.impl;
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.mapper.CepMapper;
 import br.com.locahouse.model.Cep;
-import br.com.locahouse.dto.cep.CepGetViaCepDto;
+import br.com.locahouse.dto.cep.CepConsultaViaCepDto;
 import br.com.locahouse.integration.ViaCepService;
 import com.google.gson.Gson;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -30,23 +30,23 @@ public class ViaCepServiceImpl implements ViaCepService {
 
     public Cep consultar(String numeroCep) throws IOException {
         HttpGet request = new HttpGet("https://viacep.com.br/ws/" + this.removerHifenCep(numeroCep) + "/json");
-        CepGetViaCepDto cepGetViaCepDto = null;
+        CepConsultaViaCepDto cepConsultaViaCepDto = null;
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build()) {
             CloseableHttpResponse response = httpClient.execute(request);
             if (response.getStatusLine().getStatusCode() == HttpStatus.BAD_REQUEST.value())
                 throw new BusinessException("CEP inválido.", HttpStatus.BAD_REQUEST);
             HttpEntity httpEntity = response.getEntity();
             if (httpEntity != null) {
-                cepGetViaCepDto = this.gson.fromJson(EntityUtils.toString(httpEntity), CepGetViaCepDto.class);
+                cepConsultaViaCepDto = this.gson.fromJson(EntityUtils.toString(httpEntity), CepConsultaViaCepDto.class);
             }
         }
-        if (cepGetViaCepDto != null && cepGetViaCepDto.erro() != null && cepGetViaCepDto.erro().equals("true")) {
+        if (cepConsultaViaCepDto != null && cepConsultaViaCepDto.erro() != null && cepConsultaViaCepDto.erro().equals("true")) {
             throw new BusinessException("CEP não encontrado na base de dados do ViaCEP.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        if (cepGetViaCepDto == null) {
+        if (cepConsultaViaCepDto == null) {
             throw new BusinessException("Erro ao consultar o ViaCEP.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return CepMapper.cepGetViaCepDtoToEntity(cepGetViaCepDto);
+        return CepMapper.cepConsultaViaCepDtoToEntity(cepConsultaViaCepDto);
     }
 
     private String removerHifenCep(String numeroCep) {

@@ -1,9 +1,9 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.dto.usuario.UsuarioGetDto;
-import br.com.locahouse.dto.usuario.UsuarioGetImovelDto;
-import br.com.locahouse.dto.usuario.UsuarioPostDto;
-import br.com.locahouse.dto.usuario.UsuarioPutDto;
+import br.com.locahouse.dto.usuario.UsuarioBuscaDto;
+import br.com.locahouse.dto.usuario.UsuarioBuscaDtoImovel;
+import br.com.locahouse.dto.usuario.UsuarioCadastroDto;
+import br.com.locahouse.dto.usuario.UsuarioAtualizacaoDto;
 import br.com.locahouse.model.Usuario;
 
 import java.util.Collections;
@@ -15,7 +15,7 @@ public final class UsuarioMapper {
     private UsuarioMapper() {
     }
 
-    public static Usuario usuarioPostDtoToEntity(UsuarioPostDto dto) {
+    public static Usuario usuarioCadastroDtoToEntity(UsuarioCadastroDto dto) {
         Usuario usuario = new Usuario();
         usuario.setCpf(dto.cpf());
         usuario.setNome(dto.nome());
@@ -26,7 +26,7 @@ public final class UsuarioMapper {
         return usuario;
     }
 
-    public static Usuario usuarioPutDtoToEntity(UsuarioPutDto dto) {
+    public static Usuario usuarioAtualizacaoDtoToEntity(UsuarioAtualizacaoDto dto) {
         Usuario usuario = new Usuario();
         usuario.setCpf(dto.cpf());
         usuario.setNome(dto.nome());
@@ -36,8 +36,8 @@ public final class UsuarioMapper {
         return usuario;
     }
 
-    public static UsuarioGetDto entityToUsuarioGetDto(Usuario usuario) {
-        return new UsuarioGetDto(
+    public static UsuarioBuscaDto entityToUsuarioBuscaDto(Usuario usuario) {
+        return new UsuarioBuscaDto(
                 usuario.getId(),
                 usuario.getCpf(),
                 usuario.getNome(),
@@ -45,7 +45,7 @@ public final class UsuarioMapper {
                 usuario.getTelefone(),
                 usuario.getEmail(),
                 Optional.ofNullable(usuario.getImoveis()).orElse(Collections.emptyList()).stream().map(
-                        imovel -> new UsuarioGetImovelDto(
+                        imovel -> new UsuarioBuscaDtoImovel(
                                 imovel.getId(),
                                 imovel.getStatus(),
                                 imovel.getDescricao(),
@@ -53,7 +53,8 @@ public final class UsuarioMapper {
                                 imovel.getComplemento(),
                                 imovel.getValor(),
                                 imovel.getTamanho(),
-                                imovel.getCep()
+                                imovel.getCep(),
+                                Optional.ofNullable(imovel.getComodos()).orElse(Collections.emptyList()).stream().map(ComodoDoImovelMapper::entityToComodoDoImovelBuscaDto).toList()
                         )
                 ).collect(Collectors.toList())
         );

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record UsuarioPostLoginDto(
+public record UsuarioLoginDto(
 
         @NotBlank(message = "O e-mail é obrigatório.")
         @Size(message = "O e-mail pode ter no máximo 255 caracteres.", max = 255)

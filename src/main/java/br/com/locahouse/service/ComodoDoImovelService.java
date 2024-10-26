@@ -4,5 +4,11 @@ import br.com.locahouse.model.ComodoDoImovel;
 
 public interface ComodoDoImovelService {
 
-    ComodoDoImovel salvar(ComodoDoImovel comodoDoImovel);
+    ComodoDoImovel cadastrar(Integer imovelId, ComodoDoImovel comodoDoImovel);
+
+    ComodoDoImovel buscarPeloId(Integer id);
+
+    ComodoDoImovel atualizar(Integer id, ComodoDoImovel comodoDoImovel);
+
+    void deletar(Integer id);
 }

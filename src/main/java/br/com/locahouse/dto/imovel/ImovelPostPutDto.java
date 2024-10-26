@@ -43,12 +43,7 @@ public record ImovelPostPutDto(
         @NotNull(message = "O CEP é obrigatório.")
         @Size(message = "O CEP deve ter 9 caracteres.", min = 9, max = 9)
         @JsonProperty("numero_cep")
-        String numeroCep,
-
-        @Valid
-        @NotEmpty(message = "Os cômodos do imovél são obrigatórios.")
-        @JsonProperty("comodos_imovel")
-        List<ImovelPostPutComodoDoImovelDto> comodosDoImovel
+        String numeroCep
 ) {
 
     private static final String MENSAGEM_STATUS_INVALIDO = "O status deve ser 0, 1 ou 2.";

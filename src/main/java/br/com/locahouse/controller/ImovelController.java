@@ -3,7 +3,6 @@ package br.com.locahouse.controller;
 import br.com.locahouse.dto.imovel.ImovelGetDto;
 import br.com.locahouse.dto.imovel.ImovelPostPutDto;
 import br.com.locahouse.enums.StatusImovelEnum;
-import br.com.locahouse.mapper.ComodoDoImovelMapper;
 import br.com.locahouse.mapper.ImovelMapper;
 import br.com.locahouse.model.Imovel;
 import br.com.locahouse.service.ImovelService;
@@ -64,7 +63,7 @@ public class ImovelController {
     })
     @PostMapping("/cadastrar/{usuarioId}")
     public ResponseEntity<Void> cadastrar(@PathVariable Integer usuarioId, @Valid @RequestBody ImovelPostPutDto dto) {
-        Imovel imovel = this.imovelService.cadastrar(usuarioId, ImovelMapper.imovelPostPutDtoToEntity(dto), dto.comodosDoImovel.stream().map(ComodoDoImovelMapper::imovelPostPutComodoDoImovelDtoToEntity));
+        Imovel imovel = this.imovelService.cadastrar(usuarioId, ImovelMapper.imovelPostPutDtoToEntity(dto), dto.numeroCep());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().replacePath("api/v1/imoveis/buscar/{id}").buildAndExpand(imovel.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
@@ -170,7 +169,7 @@ public class ImovelController {
     })
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<ImovelGetDto> atualizar(@PathVariable Integer id, @Valid @RequestBody ImovelPostPutDto dto) {
-        Imovel imovel = this.imovelService.atualizar(id, ImovelMapper.imovelPostPutDtoToEntity(dto), dto.numeroCep(), dto.comodosDoImovel.stream().map(ComodoDoImovelMapper::imovelPostPutComodoDoImovelDtoToEntity));
+        Imovel imovel = this.imovelService.atualizar(id, ImovelMapper.imovelPostPutDtoToEntity(dto), dto.numeroCep());
         return ResponseEntity.ok(ImovelMapper.entityToImovelGetDto(imovel));
     }
 

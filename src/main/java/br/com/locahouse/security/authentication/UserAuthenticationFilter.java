@@ -2,6 +2,7 @@ package br.com.locahouse.security.authentication;
 
 import br.com.locahouse.dto.erro.ErroDto;
 import br.com.locahouse.model.Usuario;
+import br.com.locahouse.repository.ComodoDoImovelRepository;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.config.SecurityConfiguration;
@@ -35,13 +36,16 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final ImovelRepository imovelRepository;
 
+    private final ComodoDoImovelRepository comodoDoImovelRepository;
+
     private final Gson gson;
 
     @Autowired
-    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, Gson gson) {
+    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
         this.jwtTokenService = jwtTokenService;
         this.usuarioRepository = usuarioRepository;
         this.imovelRepository = imovelRepository;
+        this.comodoDoImovelRepository = comodoDoImovelRepository;
         this.gson = gson;
     }
 
@@ -115,9 +119,14 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String tipoRecurso = partesUri[partesUri.length - 3];
         String operacao = partesUri[partesUri.length - 2];
         Integer id = Integer.parseInt(partesUri[partesUri.length - 1]);
-        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar")) {
+        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar") || tipoRecurso.equals("comodos-imoveis") && operacao.equals("cadastrar")) {
             if (this.imovelRepository.existsById(id)) {
                 return this.imovelRepository.findById(id).get().getUsuario().getId();
+            }
+            return null;
+        } else if (tipoRecurso.equals("comodos-imoveis")) {
+            if (this.comodoDoImovelRepository.existsById(id)) {
+                return this.comodoDoImovelRepository.findById(id).get().getImovel().getUsuario().getId();
             }
             return null;
         }

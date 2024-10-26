@@ -53,7 +53,8 @@ public final class UsuarioMapper {
                                 imovel.getComplemento(),
                                 imovel.getValor(),
                                 imovel.getTamanho(),
-                                imovel.getCep()
+                                imovel.getCep(),
+                                Optional.ofNullable(imovel.getComodos()).orElse(Collections.emptyList()).stream().map(ComodoDoImovelMapper::entityToComodoDoImovelBuscaDto).toList()
                         )
                 ).collect(Collectors.toList())
         );

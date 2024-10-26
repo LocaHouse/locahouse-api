@@ -58,7 +58,7 @@ public class UsuarioController {
     public ResponseEntity<JwtTokenDto> cadastrar(@Valid @RequestBody UsuarioCadastroDto dto) {
         Usuario usuario = this.usuarioService.cadastrar(UsuarioMapper.usuarioCadastroDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
-        return ResponseEntity.created(location).body(new JwtTokenDto(this.usuarioService.fazerLogin(dto.email(), dto.senha())));
+        return ResponseEntity.created(location).body(new JwtTokenDto(usuario.getId(), this.usuarioService.fazerLogin(dto.email(), dto.senha())));
     }
 
     @Operation(
@@ -81,7 +81,7 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioLoginDto dto) {
         String token = this.usuarioService.fazerLogin(dto.email(), dto.senha());
-        return ResponseEntity.ok(new JwtTokenDto(token));
+        return ResponseEntity.ok(new JwtTokenDto(this.usuarioService.buscarPeloEmail(dto.email()).getId(), token));
     }
 
     @Operation(

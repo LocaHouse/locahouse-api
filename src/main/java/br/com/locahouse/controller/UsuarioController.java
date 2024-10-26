@@ -55,8 +55,8 @@ public class UsuarioController {
             )
     })
     @PostMapping("/cadastrar")
-    public ResponseEntity<JwtTokenDto> cadastrar(@Valid @RequestBody UsuarioPostDto dto) {
-        Usuario usuario = this.usuarioService.cadastrar(UsuarioMapper.usuarioPostDtoToEntity(dto));
+    public ResponseEntity<JwtTokenDto> cadastrar(@Valid @RequestBody UsuarioCadastroDto dto) {
+        Usuario usuario = this.usuarioService.cadastrar(UsuarioMapper.usuarioCadastroDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
         return ResponseEntity.created(location).body(new JwtTokenDto(this.usuarioService.fazerLogin(dto.email(), dto.senha())));
     }
@@ -79,7 +79,7 @@ public class UsuarioController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioPostLoginDto dto) {
+    public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioLoginDto dto) {
         String token = this.usuarioService.fazerLogin(dto.email(), dto.senha());
         return ResponseEntity.ok(new JwtTokenDto(token));
     }
@@ -110,8 +110,8 @@ public class UsuarioController {
             )
     })
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<UsuarioGetDto> buscarPeloId(@PathVariable Integer id) {
-        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioGetDto(this.usuarioService.buscarPeloId(id)));
+    public ResponseEntity<UsuarioBuscaDto> buscarPeloId(@PathVariable Integer id) {
+        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioBuscaDto(this.usuarioService.buscarPeloId(id)));
     }
 
     @Operation(
@@ -148,9 +148,9 @@ public class UsuarioController {
             )
     })
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<UsuarioGetDto> atualizar(@PathVariable Integer id, @Valid @RequestBody UsuarioPutDto dto) {
-        Usuario usuario = this.usuarioService.atualizar(id, UsuarioMapper.usuarioPutDtoToEntity(dto));
-        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioGetDto(usuario));
+    public ResponseEntity<UsuarioBuscaDto> atualizar(@PathVariable Integer id, @Valid @RequestBody UsuarioAtualizacaoDto dto) {
+        Usuario usuario = this.usuarioService.atualizar(id, UsuarioMapper.usuarioAtualizacaoDtoToEntity(dto));
+        return ResponseEntity.ok(UsuarioMapper.entityToUsuarioBuscaDto(usuario));
     }
 
     @Operation(
@@ -175,7 +175,7 @@ public class UsuarioController {
             )
     })
     @PatchMapping("/atualizar-senha/{id}")
-    public ResponseEntity<Void> atualizarSenha(@PathVariable Integer id, @Valid @RequestBody UsuarioPatchAtualizacaoSenhaDto dto) {
+    public ResponseEntity<Void> atualizarSenha(@PathVariable Integer id, @Valid @RequestBody UsuarioAtualizacaoSenhaDto dto) {
         this.usuarioService.atualizarSenha(id, dto.senhaAtual(), dto.novaSenha());
         return ResponseEntity.noContent().build();
     }

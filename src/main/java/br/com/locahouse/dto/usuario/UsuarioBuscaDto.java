@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.util.List;
 
-public record UsuarioGetDto(
+public record UsuarioBuscaDto(
 
         @JsonProperty("id")
         Integer id,
@@ -26,6 +26,6 @@ public record UsuarioGetDto(
         String email,
 
         @JsonProperty("imoveis")
-        List<UsuarioGetImovelDto> imoveis
+        List<UsuarioBuscaDtoImovel> imoveis
 ) {
 }

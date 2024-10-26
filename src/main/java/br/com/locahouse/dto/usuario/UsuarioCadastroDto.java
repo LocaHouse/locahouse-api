@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record UsuarioPutDto(
+public record UsuarioCadastroDto(
 
         @NotBlank(message = "O CPF é obrigatório.")
         @Size(message = "O CPF deve ter 14 caracteres.", min = 14, max = 14)
@@ -27,6 +27,10 @@ public record UsuarioPutDto(
         @NotBlank(message = "O e-mail é obrigatório.")
         @Size(message = "O e-mail pode ter no máximo 255 caracteres.", max = 255)
         @Email(message = "O e-mail deve ser válido.")
-        String email
+        String email,
+
+        @NotBlank(message = "A senha é obrigatória.")
+        @Size(message = "A senha deve ter entre 8 a 60 caracteres.", min = 8, max = 60)
+        String senha
 ) {
 }

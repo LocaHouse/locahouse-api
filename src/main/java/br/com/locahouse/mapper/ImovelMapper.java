@@ -1,8 +1,8 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.dto.imovel.ImovelGetDto;
-import br.com.locahouse.dto.imovel.ImovelGetUsuarioDto;
-import br.com.locahouse.dto.imovel.ImovelPostPutDto;
+import br.com.locahouse.dto.imovel.ImovelBuscaDto;
+import br.com.locahouse.dto.imovel.ImovelBuscaDtoUsuario;
+import br.com.locahouse.dto.imovel.ImovelCadastroAndAtualizacaoDto;
 import br.com.locahouse.enums.StatusImovelEnum;
 import br.com.locahouse.model.Imovel;
 
@@ -11,7 +11,7 @@ public final class ImovelMapper {
     private ImovelMapper() {
     }
 
-    public static Imovel imovelPostPutDtoToEntity(ImovelPostPutDto dto) {
+    public static Imovel imovelCadastroAndAtualizacaoDtoToEntity(ImovelCadastroAndAtualizacaoDto dto) {
         Imovel imovel = new Imovel();
         imovel.setStatus(StatusImovelEnum.bucarEnumPeloCodigo(dto.status()));
         imovel.setDescricao(dto.descricao());
@@ -22,8 +22,8 @@ public final class ImovelMapper {
         return imovel;
     }
 
-    public static ImovelGetDto entityToImovelGetDto(Imovel imovel) {
-        return new ImovelGetDto(
+    public static ImovelBuscaDto entityToImovelBuscaDto(Imovel imovel) {
+        return new ImovelBuscaDto(
                 imovel.getId(),
                 imovel.getStatus(),
                 imovel.getDescricao(),
@@ -31,7 +31,7 @@ public final class ImovelMapper {
                 imovel.getComplemento(),
                 imovel.getValor(),
                 imovel.getTamanho(),
-                new ImovelGetUsuarioDto(
+                new ImovelBuscaDtoUsuario(
                         imovel.getUsuario().getId(),
                         imovel.getUsuario().getNome(),
                         imovel.getUsuario().getTelefone(),

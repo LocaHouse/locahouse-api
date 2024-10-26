@@ -1,13 +1,11 @@
 package br.com.locahouse.dto.imovel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-public record ImovelPostPutDto(
+public record ImovelCadastroAndAtualizacaoDto(
 
         @NotNull(message = "O status é obrigatório.")
         @Min(value = 0, message = MENSAGEM_STATUS_INVALIDO)

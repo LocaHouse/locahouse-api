@@ -51,37 +51,41 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String requestUri = request.getRequestURI();
         if (verificarEndpointComAutenticacao(requestUri)) {
             String token = recuperarToken(request);
-            if (token != null) {
-                try {
-                    Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
-                    if (usuario == null) {
-                        gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
-                        return;
-                    }
-                    try {
-                        if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
-                            gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
-                            return;
-                        }
-                    } catch (NumberFormatException e) {
-                        gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
-                        return;
-                    }
-                    UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()); // Cria um objeto de autenticação do Spring Security
-                    SecurityContextHolder.getContext().setAuthentication(authentication);                                                                             // Define o objeto de autenticação no contexto de segurança do Spring Security
-                } catch (JWTVerificationException e) {
+            if (token == null) {
+                gerarErro(response, HttpStatus.UNAUTHORIZED, "O token está ausente.");
+                return;
+            }
+            try {
+                Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
+                if (usuario == null) {
                     gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
                     return;
                 }
-            } else {
-                gerarErro(response, HttpStatus.UNAUTHORIZED, "O token está ausente.");
+                try {
+                    if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
+                        gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
+                    return;
+                }
+                UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()); // Cria um objeto de autenticação do Spring Security
+                SecurityContextHolder.getContext().setAuthentication(authentication);                                                                             // Define o objeto de autenticação no contexto de segurança do Spring Security
+            } catch (JWTVerificationException e) {
+                gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
                 return;
             }
         } else if (!verificarEndpointSemAutenticacao(requestUri)) {

@@ -12,7 +12,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
         corsRegistry
                 .addMapping("/**")
                 .allowedOrigins(System.getenv("URL_FRONTEND"))
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .exposedHeaders("Location")
                 .allowCredentials(true)

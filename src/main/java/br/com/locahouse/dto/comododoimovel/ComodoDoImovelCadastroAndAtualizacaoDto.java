@@ -3,11 +3,12 @@ package br.com.locahouse.dto.comododoimovel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public record ComodoDoImovelCadastroAndAtualizacaoDto(
 
         @NotNull(message = "A quantidade é obrigatória.")
-        @Positive(message = "A quantidade deve ser positiva.")
+        @PositiveOrZero(message = "Quantidade inválida.")
         @JsonProperty("quantidade")
         Integer quantidade,
 

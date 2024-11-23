@@ -1,4 +1,4 @@
-package br.com.locahouse.config;
+package br.com.locahouse.security.config;
 
 import br.com.locahouse.security.authentication.UserAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -63,7 +63,7 @@ CREATE TABLE comodos_imoveis(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 
 	quantidade INT NOT NULL,
-	CHECK(quantidade > 0),
+	CHECK(quantidade >= 0),
 
 	comodo_id INT NOT NULL,
 	FOREIGN KEY(comodo_id) REFERENCES comodos(id),

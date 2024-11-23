@@ -5,7 +5,7 @@ import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ComodoDoImovelRepository;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
-import br.com.locahouse.config.SecurityConfiguration;
+import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
@@ -123,7 +123,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String tipoRecurso = partesUri[partesUri.length - 3];
         String operacao = partesUri[partesUri.length - 2];
         Integer id = Integer.parseInt(partesUri[partesUri.length - 1]);
-        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar") || tipoRecurso.equals("comodos-imoveis") && operacao.equals("cadastrar")) {
+        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar") && !operacao.equals("buscar-meus") || tipoRecurso.equals("comodos-imoveis") && operacao.equals("cadastrar")) {
             if (this.imovelRepository.existsById(id)) {
                 return this.imovelRepository.findById(id).get().getUsuario().getId();
             }

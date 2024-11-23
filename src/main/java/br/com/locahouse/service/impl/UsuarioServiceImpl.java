@@ -6,7 +6,7 @@ import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.authentication.JwtTokenService;
-import br.com.locahouse.config.SecurityConfiguration;
+import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
 import br.com.locahouse.service.UsuarioService;
 import org.springframework.beans.BeanUtils;

@@ -103,9 +103,9 @@ public class ImovelController {
                     description = "Erro interno do servidor."
             )
     })
-    @GetMapping("/buscar-meus/{idUsuario}")
-    public Page<ImovelBuscaDto> buscarTodosPorUsuario(Pageable pageable, @PathVariable Integer idUsuario, @RequestParam(required = false) Integer status) {
-        return this.buscarImoveis(pageable, idUsuario, status);
+    @GetMapping("/buscar-meus/{usuarioId}")
+    public Page<ImovelBuscaDto> buscarTodosPorUsuario(Pageable pageable, @PathVariable Integer usuarioId, @RequestParam(required = false) Integer status) {
+        return this.buscarImoveis(pageable, usuarioId, status);
     }
 
     @Operation(

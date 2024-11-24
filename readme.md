@@ -42,17 +42,23 @@ Link: https://github.com/samuel-fm-coding/Projeto-Front
 - IntelliJ IDEA.
 - VSCode com o plugin Live Server.
 
-### Instalação
+### Instalação e execução
 
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/locahouse.git
+   git clone https://github.com/gabrielravanhan/locahouse-api.git
 
 2. Clone o repositório com o front-end:
    ```bash
-   git clone https://github.com/seu-usuario/locahouse.git
+   git clone https://github.com/samuel-fm-coding/Projeto-Front.git
 
-3. Crie as seguintes variáveis de ambiente dentro do IntelliJ:
-  - USER_DB: informe o usuário do banco de dados.
-  - PASSWORD_DB: informe a senha do usuário do banco de dados.
-  - URL_FRONTEND: informe a URL em que o front-end do projeto é executado pelo Live Server (geralmente é http://127.0.0.1:5500).
+3. Abra o repositório com o front-end e execute o Live Server no arquivo index.html.
+
+4. Abra este repositório no IntelliJ e crie as seguintes variáveis de ambiente:
+     - USER_DB: informe o usuário do banco de dados.
+     - PASSWORD_DB: informe a senha do usuário do banco de dados.
+     - URL_FRONTEND: informe a URL em que o front-end do projeto é executado pelo Live Server (geralmente é http://127.0.0.1:5500).
+
+5. Ainda no IntelliJ, execute o projeto.
+
+6. Vá até a página abertar pelo Live Server no navegador e pronto, a aplicação está instalada e executando!

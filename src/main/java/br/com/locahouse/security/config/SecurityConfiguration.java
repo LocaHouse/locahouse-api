@@ -55,17 +55,13 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                // Desativa a proteção contra CSRF
                 .csrf(AbstractHttpConfigurer::disable)
-                // Configura a política de criação de sessão como stateless
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Habilita a autorização para as requisições HTTP
-                .authorizeHttpRequests(authz -> authz
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(ENDPOINTS_SEM_AUTENTICACAO).permitAll()
                         .requestMatchers(ENDPOINTS_COM_AUTENTICACAO).authenticated()
                         .anyRequest().denyAll())
-                // Filtro de autenticação personalizado
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

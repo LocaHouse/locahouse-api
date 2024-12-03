@@ -40,6 +40,12 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final Gson gson;
 
+    private static final String[] MENSAGENS_ERRO = {
+            "Token inválido.",
+            "Acesso ao recurso negado.",
+            "Recurso não encontrado."
+    };
+
     @Autowired
     private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
         this.jwtTokenService = jwtTokenService;
@@ -63,33 +69,36 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         if (verificarEndpointComAutenticacao(requestUri)) {
             String token = recuperarToken(request);
             if (token == null) {
-                gerarErro(response, HttpStatus.UNAUTHORIZED, "O token está ausente.");
+                gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                 return;
             }
+
             try {
                 Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
                 if (usuario == null) {
-                    gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
+                    gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                     return;
                 }
+
                 try {
-                    if (!usuario.getId().equals(extrairIdUsuarioDaUri(requestUri))) {
-                        gerarErro(response, HttpStatus.FORBIDDEN, "Acesso ao recurso negado.");
+                    if (!usuario.getId().equals(obterIdUsuario(requestUri))) {
+                        gerarErro(response, HttpStatus.FORBIDDEN, MENSAGENS_ERRO[1]);
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
+                    gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
                     return;
                 }
+
                 UserDetailsImpl userDetails = new UserDetailsImpl(usuario);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities()); // Cria um objeto de autenticação do Spring Security
-                SecurityContextHolder.getContext().setAuthentication(authentication);                                                                             // Define o objeto de autenticação no contexto de segurança do Spring Security
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException e) {
-                gerarErro(response, HttpStatus.UNAUTHORIZED, "Token inválido.");
+                gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                 return;
             }
         } else if (!verificarEndpointSemAutenticacao(requestUri)) {
-            gerarErro(response, HttpStatus.NOT_FOUND, "Recurso não encontrado.");
+            gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
             return;
         }
 
@@ -112,39 +121,38 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private String recuperarToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
-            return authorizationHeader.replace("Bearer ", "");
-        }
-        return null;
+        return authorizationHeader != null ? authorizationHeader.replace("Bearer ", "") : null;
     }
 
-    private Integer extrairIdUsuarioDaUri(String requestUri) throws NumberFormatException {
+    private Integer obterIdUsuario(String requestUri) throws NumberFormatException {
         String[] partesUri = requestUri.split("/");
-        String tipoRecurso = partesUri[partesUri.length - 3];
-        String operacao = partesUri[partesUri.length - 2];
-        Integer id = Integer.parseInt(partesUri[partesUri.length - 1]);
-        if (tipoRecurso.equals("imoveis") && !operacao.equals("cadastrar") && !operacao.equals("buscar-meus") || tipoRecurso.equals("comodos-imoveis") && operacao.equals("cadastrar")) {
-            if (this.imovelRepository.existsById(id)) {
-                return this.imovelRepository.findById(id).get().getUsuario().getId();
-            }
-            return null;
-        } else if (tipoRecurso.equals("comodos-imoveis")) {
-            if (this.comodoDoImovelRepository.existsById(id)) {
-                return this.comodoDoImovelRepository.findById(id).get().getImovel().getUsuario().getId();
-            }
-            return null;
-        }
-        return id;
+        String recursoUri = obterElementoDaUri(partesUri, 3);
+        String operacaoUri = obterElementoDaUri(partesUri, 2);
+        Integer idUri = Integer.parseInt(obterElementoDaUri(partesUri, 1));
+
+        if (isImovelId(recursoUri, operacaoUri))
+            return imovelRepository.findById(idUri).map(imovel -> imovel.getUsuario().getId()).orElse(null);
+        else if (isComodoDoImovelId(recursoUri))
+            return comodoDoImovelRepository.findById(idUri).map(comodo -> comodo.getImovel().getUsuario().getId()).orElse(null);
+
+        return idUri;
+    }
+
+    private String obterElementoDaUri(String[] partesUri, int indiceReverso) {
+        return partesUri[partesUri.length - indiceReverso];
+    }
+
+    private boolean isImovelId(String recursoUri, String operacaoUri) {
+        return recursoUri.equals("imoveis") && !operacaoUri.equals("cadastrar") && !operacaoUri.equals("buscar-meus") || recursoUri.equals("comodos-imoveis") && operacaoUri.equals("cadastrar");
+    }
+
+    private boolean isComodoDoImovelId(String recursoUri) {
+        return recursoUri.equals("comodos-imoveis");
     }
 
     private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {
         response.setStatus(httpStatus.value());
-        String jsonResponse = gson.toJson(
-                new ErroDto(
-                        httpStatus,
-                        List.of(mensagem)
-                )
-        );
+        String jsonResponse = gson.toJson(new ErroDto(httpStatus, List.of(mensagem)));
         response.getWriter().write(jsonResponse);
     }
 }

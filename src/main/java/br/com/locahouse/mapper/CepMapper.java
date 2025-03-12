@@ -8,7 +8,7 @@ public final class CepMapper {
     private CepMapper() {
     }
 
-    public static Cep cepConsultaViaCepDtoToEntity(CepViaCepDto dto) {
+    public static Cep cepViaCepDtoToEntity(CepViaCepDto dto) {
         Cep cep = new Cep();
         cep.setNumero(dto.cep());
         cep.setUf(dto.uf());

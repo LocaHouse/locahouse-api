@@ -47,7 +47,7 @@ public class ViaCepServiceImpl implements ViaCepService {
         if (cepViaCepDto == null)
             throw new BusinessException("Erro ao consultar o ViaCEP.", HttpStatus.INTERNAL_SERVER_ERROR);
 
-        return CepMapper.cepConsultaViaCepDtoToEntity(cepViaCepDto);
+        return CepMapper.cepViaCepDtoToEntity(cepViaCepDto);
     }
 
     private String removerHifenCep(String numeroCep) {

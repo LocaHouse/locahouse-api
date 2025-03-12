@@ -1,6 +1,6 @@
 package br.com.locahouse.controller;
 
-import br.com.locahouse.dto.jwt.JwtTokenDto;
+import br.com.locahouse.dto.token.TokenDto;
 import br.com.locahouse.dto.usuario.*;
 import br.com.locahouse.mapper.UsuarioMapper;
 import br.com.locahouse.model.Usuario;
@@ -55,10 +55,10 @@ public class UsuarioController {
             )
     })
     @PostMapping("/cadastrar")
-    public ResponseEntity<JwtTokenDto> cadastrar(@Valid @RequestBody UsuarioCadastroDto dto) {
+    public ResponseEntity<TokenDto> cadastrar(@Valid @RequestBody UsuarioCadastroDto dto) {
         Usuario usuario = this.usuarioService.cadastrar(UsuarioMapper.usuarioCadastroDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuario.getId()).toUri();
-        return ResponseEntity.created(location).body(new JwtTokenDto(usuario.getId(), this.usuarioService.fazerLogin(dto.email(), dto.senha())));
+        return ResponseEntity.created(location).body(new TokenDto(usuario.getId(), this.usuarioService.fazerLogin(dto.email(), dto.senha())));
     }
 
     @Operation(
@@ -79,9 +79,9 @@ public class UsuarioController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> fazerLogin(@RequestBody UsuarioLoginDto dto) {
+    public ResponseEntity<TokenDto> fazerLogin(@RequestBody UsuarioLoginDto dto) {
         String token = this.usuarioService.fazerLogin(dto.email(), dto.senha());
-        return ResponseEntity.ok(new JwtTokenDto(this.usuarioService.buscarPeloEmail(dto.email()).getId(), token));
+        return ResponseEntity.ok(new TokenDto(this.usuarioService.buscarPeloEmail(dto.email()).getId(), token));
     }
 
     @Operation(

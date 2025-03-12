@@ -7,6 +7,7 @@ import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import br.com.locahouse.service.TokenService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
@@ -30,7 +31,7 @@ import java.util.List;
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenService jwtTokenService;
+    private final TokenService tokenService;
 
     private final UsuarioRepository usuarioRepository;
 
@@ -47,8 +48,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     };
 
     @Autowired
-    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
-        this.jwtTokenService = jwtTokenService;
+    private UserAuthenticationFilter(TokenService tokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
+        this.tokenService = tokenService;
         this.usuarioRepository = usuarioRepository;
         this.imovelRepository = imovelRepository;
         this.comodoDoImovelRepository = comodoDoImovelRepository;
@@ -74,7 +75,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             }
 
             try {
-                Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
+                Usuario usuario = usuarioRepository.findById(Integer.parseInt(tokenService.buscarSubject(token))).orElse(null);
                 if (usuario == null) {
                     gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                     return;

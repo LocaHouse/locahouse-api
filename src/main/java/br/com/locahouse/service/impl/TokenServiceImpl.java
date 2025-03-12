@@ -1,6 +1,7 @@
-package br.com.locahouse.security.authentication;
+package br.com.locahouse.service.impl;
 
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import br.com.locahouse.service.TokenService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -11,7 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Service
-public class JwtTokenService {
+public class TokenServiceImpl implements TokenService {
 
     /**
      * Chave secreta utilizada para gerar e verificar o token.
@@ -26,17 +27,19 @@ public class JwtTokenService {
     /**
      * Emissor do token.
      **/
-    private static final String EMISSOR = "pizzurg-api"; //
+    private static final String EMISSOR = "pizzurg-api";
 
+    @Override
     public String gerarToken(UserDetailsImpl user) {
         try {
-            return JWT.create().withIssuer(EMISSOR).withIssuedAt(definirDataHoraEmissao()).withExpiresAt(definirDataHoraExpiracao()).withSubject(user.getUsername()).sign(ALGORITMO);
+            return JWT.create().withIssuer(EMISSOR).withIssuedAt(this.definirDataHoraEmissao()).withExpiresAt(this.definirDataHoraExpiracao()).withSubject(user.getUsername()).sign(ALGORITMO);
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Erro ao gerar token.", exception);
         }
     }
 
-    public String recuperarSubject(String token) {
+    @Override
+    public String buscarSubject(String token) {
         return JWT.require(ALGORITMO).withIssuer(EMISSOR).build().verify(token).getSubject();
     }
 

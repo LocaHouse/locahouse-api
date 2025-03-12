@@ -1,6 +1,6 @@
 package br.com.locahouse.model;
 
-import br.com.locahouse.enums.StatusImovelEnum;
+import br.com.locahouse.model.enums.StatusImovelEnum;
 import jakarta.persistence.*;
 import lombok.*;
 

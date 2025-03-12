@@ -1,4 +1,4 @@
-package br.com.locahouse.enums;
+package br.com.locahouse.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,20 +15,18 @@ public enum StatusImovelEnum {
     private final String descricao;
 
     public static StatusImovelEnum bucarEnumPeloCodigo(Integer codigo) {
-        for (StatusImovelEnum status : StatusImovelEnum.values()) {
-            if (status.getCodigo().equals(codigo)) {
+        for (StatusImovelEnum status : StatusImovelEnum.values())
+            if (status.getCodigo().equals(codigo))
                 return status;
-            }
-        }
-        throw new IllegalArgumentException("Código inválido: " + codigo);
+
+        throw new IllegalArgumentException("Status do imóvel inválido: " + codigo);
     }
 
     public static boolean verificarExistencia(Integer codigo) {
-        for (StatusImovelEnum status : StatusImovelEnum.values()) {
-            if (status.getCodigo().equals(codigo)) {
+        for (StatusImovelEnum status : StatusImovelEnum.values())
+            if (status.getCodigo().equals(codigo))
                 return true;
-            }
-        }
+
         return false;
     }
 }

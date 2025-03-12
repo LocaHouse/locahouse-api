@@ -1,4 +1,4 @@
-package br.com.locahouse.dto.usuario;
+package br.com.locahouse.controller.dto.usuario;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package br.com.locahouse.dto.imovel;
+package br.com.locahouse.controller.dto.imovel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;

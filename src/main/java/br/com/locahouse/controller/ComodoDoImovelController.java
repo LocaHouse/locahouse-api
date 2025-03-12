@@ -1,7 +1,7 @@
 package br.com.locahouse.controller;
 
-import br.com.locahouse.dto.comododoimovel.ComodoDoImovelBuscaDto;
-import br.com.locahouse.dto.comododoimovel.ComodoDoImovelCadastroAndAtualizacaoDto;
+import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelBuscaDto;
+import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelCadastroAndAtualizacaoDto;
 import br.com.locahouse.mapper.ComodoDoImovelMapper;
 import br.com.locahouse.model.ComodoDoImovel;
 import br.com.locahouse.service.ComodoDoImovelService;

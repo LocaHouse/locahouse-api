@@ -1,7 +1,7 @@
 package br.com.locahouse.controller;
 
-import br.com.locahouse.dto.imovel.ImovelBuscaDto;
-import br.com.locahouse.dto.imovel.ImovelCadastroAndAtualizacaoDto;
+import br.com.locahouse.controller.dto.imovel.ImovelBuscaDto;
+import br.com.locahouse.controller.dto.imovel.ImovelCadastroAndAtualizacaoDto;
 import br.com.locahouse.model.enums.StatusImovelEnum;
 import br.com.locahouse.mapper.ImovelMapper;
 import br.com.locahouse.model.Imovel;

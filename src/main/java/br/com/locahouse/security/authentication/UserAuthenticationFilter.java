@@ -1,6 +1,6 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.dto.erro.ErroDto;
+import br.com.locahouse.exception.handler.dto.ExceptionDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ComodoDoImovelRepository;
 import br.com.locahouse.repository.ImovelRepository;
@@ -144,6 +144,6 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {
         response.setStatus(httpStatus.value());
-        response.getWriter().write(gson.toJson(new ErroDto(httpStatus, List.of(mensagem))));
+        response.getWriter().write(gson.toJson(new ExceptionDto(httpStatus, List.of(mensagem))));
     }
 }

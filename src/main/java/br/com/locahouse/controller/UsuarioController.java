@@ -1,7 +1,7 @@
 package br.com.locahouse.controller;
 
-import br.com.locahouse.dto.token.TokenDto;
-import br.com.locahouse.dto.usuario.*;
+import br.com.locahouse.controller.dto.token.TokenDto;
+import br.com.locahouse.controller.dto.usuario.*;
 import br.com.locahouse.mapper.UsuarioMapper;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.service.UsuarioService;

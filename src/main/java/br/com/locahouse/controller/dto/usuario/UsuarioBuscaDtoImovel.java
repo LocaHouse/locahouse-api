@@ -1,6 +1,6 @@
-package br.com.locahouse.dto.usuario;
+package br.com.locahouse.controller.dto.usuario;
 
-import br.com.locahouse.dto.comododoimovel.ComodoDoImovelBuscaDto;
+import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelBuscaDto;
 import br.com.locahouse.model.Cep;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

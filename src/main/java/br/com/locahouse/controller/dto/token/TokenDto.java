@@ -1,4 +1,4 @@
-package br.com.locahouse.dto.token;
+package br.com.locahouse.controller.dto.token;
 
 public record TokenDto(
 

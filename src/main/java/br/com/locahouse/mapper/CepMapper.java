@@ -1,6 +1,6 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.integration.impl.dto.CepViaCepDto;
+import br.com.locahouse.service.integration.viacep.dto.CepViaCepDto;
 import br.com.locahouse.model.Cep;
 
 public final class CepMapper {

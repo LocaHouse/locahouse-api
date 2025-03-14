@@ -3,7 +3,7 @@ package br.com.locahouse.service.impl;
 import br.com.locahouse.model.enums.StatusImovelEnum;
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
-import br.com.locahouse.integration.ViaCepService;
+import br.com.locahouse.service.integration.viacep.ViaCepService;
 import br.com.locahouse.model.Imovel;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.service.*;

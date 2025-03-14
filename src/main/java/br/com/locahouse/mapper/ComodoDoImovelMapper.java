@@ -7,7 +7,7 @@ import br.com.locahouse.model.ComodoDoImovel;
 
 public class ComodoDoImovelMapper {
 
-    public static ComodoDoImovel comodoDoImovelCadastroAndAtualizacaoDtoDtoToEntity(ComodoDoImovelCadastroAndAtualizacaoDto dto) {
+    public static ComodoDoImovel comodoDoImovelCadastroAndAtualizacaoDtoToEntity(ComodoDoImovelCadastroAndAtualizacaoDto dto) {
         ComodoDoImovel comodoDoImovel = new ComodoDoImovel();
         comodoDoImovel.setQuantidade(dto.quantidade());
         comodoDoImovel.setComodo(new Comodo());

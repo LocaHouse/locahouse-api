@@ -1,4 +1,4 @@
-package br.com.locahouse.integration.impl.dto;
+package br.com.locahouse.service.integration.viacep.dto;
 
 public record CepViaCepDto(
 

@@ -60,7 +60,7 @@ public class ComodoDoImovelController {
     })
     @PostMapping("/cadastrar/{imovelId}")
     public ResponseEntity<Void> cadastrar(@PathVariable Integer imovelId, @Valid @RequestBody ComodoDoImovelCadastroAndAtualizacaoDto dto) {
-        ComodoDoImovel comodoDoImovel = this.comodoDoImovelService.cadastrar(imovelId, ComodoDoImovelMapper.comodoDoImovelCadastroAndAtualizacaoDtoDtoToEntity(dto));
+        ComodoDoImovel comodoDoImovel = this.comodoDoImovelService.cadastrar(imovelId, ComodoDoImovelMapper.comodoDoImovelCadastroAndAtualizacaoDtoToEntity(dto));
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().replacePath("api/v1/comodos-imoveis/buscar/{id}").buildAndExpand(comodoDoImovel.getId()).toUri();
         return ResponseEntity.created(location).build();
     }
@@ -126,7 +126,7 @@ public class ComodoDoImovelController {
     })
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<ComodoDoImovelBuscaDto> atualizar(@PathVariable Integer id, @Valid @RequestBody ComodoDoImovelCadastroAndAtualizacaoDto dto) {
-        return ResponseEntity.ok(ComodoDoImovelMapper.entityToComodoDoImovelBuscaDto(this.comodoDoImovelService.atualizar(id, ComodoDoImovelMapper.comodoDoImovelCadastroAndAtualizacaoDtoDtoToEntity(dto))));
+        return ResponseEntity.ok(ComodoDoImovelMapper.entityToComodoDoImovelBuscaDto(this.comodoDoImovelService.atualizar(id, ComodoDoImovelMapper.comodoDoImovelCadastroAndAtualizacaoDtoToEntity(dto))));
     }
 
     @Operation(

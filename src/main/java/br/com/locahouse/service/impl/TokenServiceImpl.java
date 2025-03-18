@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Service
-public final class TokenServiceImpl implements TokenService {
+public class TokenServiceImpl implements TokenService {
 
     /**
      * Chave secreta utilizada para gerar e verificar o token.

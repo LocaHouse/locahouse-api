@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 
 @Configuration
-public final class PaginationConfiguration {
+public class PaginationConfiguration {
 
     @Bean
     public PageableHandlerMethodArgumentResolverCustomizer pageableHandlerMethodArgumentResolverCustomizer() {

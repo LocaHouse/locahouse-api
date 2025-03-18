@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public final class ViaCepServiceImpl implements ViaCepService {
+public class ViaCepServiceImpl implements ViaCepService {
 
     private final Gson gson;
 

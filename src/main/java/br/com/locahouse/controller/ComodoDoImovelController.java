@@ -16,7 +16,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/comodos-imoveis")
-public final class ComodoDoImovelController implements ComodoDoImovelControllerDoc {
+public class ComodoDoImovelController implements ComodoDoImovelControllerDoc {
 
     private final ComodoDoImovelService comodoDoImovelService;
 

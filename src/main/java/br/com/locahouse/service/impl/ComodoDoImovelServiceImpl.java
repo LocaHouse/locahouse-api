@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public final class ComodoDoImovelServiceImpl implements ComodoDoImovelService {
+public class ComodoDoImovelServiceImpl implements ComodoDoImovelService {
 
     private final ComodoDoImovelRepository repository;
 

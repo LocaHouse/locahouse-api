@@ -19,7 +19,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/imoveis")
-public final class ImovelController implements ImovelControllerDoc {
+public class ImovelController implements ImovelControllerDoc {
 
     private final ImovelService imovelService;
 

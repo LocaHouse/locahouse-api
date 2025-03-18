@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 @Service
-public final class ImovelServiceImpl implements ImovelService {
+public class ImovelServiceImpl implements ImovelService {
 
     private final ImovelRepository repository;
 

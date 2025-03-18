@@ -5,7 +5,7 @@ import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelCadastroAndA
 import br.com.locahouse.model.Comodo;
 import br.com.locahouse.model.ComodoDoImovel;
 
-public class ComodoDoImovelMapper {
+public final class ComodoDoImovelMapper {
 
     public static ComodoDoImovel comodoDoImovelCadastroAndAtualizacaoDtoToEntity(ComodoDoImovelCadastroAndAtualizacaoDto dto) {
         ComodoDoImovel comodoDoImovel = new ComodoDoImovel();

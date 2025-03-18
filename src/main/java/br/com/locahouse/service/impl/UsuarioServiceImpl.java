@@ -23,7 +23,7 @@ import java.time.Period;
 import java.util.Optional;
 
 @Service
-public final class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
 

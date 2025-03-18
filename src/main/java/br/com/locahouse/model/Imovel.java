@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Table(name = "imoveis")
 @Entity
-public class Imovel {
+public final class Imovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

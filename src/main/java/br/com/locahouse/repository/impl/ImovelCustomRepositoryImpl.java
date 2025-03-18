@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-class ImovelCustomRepositoryImpl implements ImovelCustomRepository {
+final class ImovelCustomRepositoryImpl implements ImovelCustomRepository {
 
     private final EntityManager entityManager;
 

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ComodoServiceImpl implements ComodoService {
+public final class ComodoServiceImpl implements ComodoService {
 
     private final ComodoRepository repository;
 

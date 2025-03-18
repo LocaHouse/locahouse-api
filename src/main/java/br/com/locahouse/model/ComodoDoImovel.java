@@ -10,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode(of = "id")
 @Table(name = "comodos_imoveis")
 @Entity
-public class ComodoDoImovel {
+public final class ComodoDoImovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

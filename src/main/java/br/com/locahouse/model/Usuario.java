@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Table(name = "usuarios")
 @Entity
-public class Usuario {
+public final class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

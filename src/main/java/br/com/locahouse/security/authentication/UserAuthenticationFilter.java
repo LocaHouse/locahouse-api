@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class UserAuthenticationFilter extends OncePerRequestFilter {
+public final class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 

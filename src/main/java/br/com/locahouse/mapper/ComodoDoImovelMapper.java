@@ -1,13 +1,13 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.dto.comododoimovel.ComodoDoImovelBuscaDto;
-import br.com.locahouse.dto.comododoimovel.ComodoDoImovelCadastroAndAtualizacaoDto;
+import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelBuscaDto;
+import br.com.locahouse.controller.dto.comododoimovel.ComodoDoImovelCadastroAndAtualizacaoDto;
 import br.com.locahouse.model.Comodo;
 import br.com.locahouse.model.ComodoDoImovel;
 
-public class ComodoDoImovelMapper {
+public final class ComodoDoImovelMapper {
 
-    public static ComodoDoImovel comodoDoImovelCadastroAndAtualizacaoDtoDtoToEntity(ComodoDoImovelCadastroAndAtualizacaoDto dto) {
+    public static ComodoDoImovel comodoDoImovelCadastroAndAtualizacaoDtoToEntity(ComodoDoImovelCadastroAndAtualizacaoDto dto) {
         ComodoDoImovel comodoDoImovel = new ComodoDoImovel();
         comodoDoImovel.setQuantidade(dto.quantidade());
         comodoDoImovel.setComodo(new Comodo());

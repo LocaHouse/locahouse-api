@@ -1,9 +1,9 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.dto.usuario.UsuarioBuscaDto;
-import br.com.locahouse.dto.usuario.UsuarioBuscaDtoImovel;
-import br.com.locahouse.dto.usuario.UsuarioCadastroDto;
-import br.com.locahouse.dto.usuario.UsuarioAtualizacaoDto;
+import br.com.locahouse.controller.dto.usuario.UsuarioBuscaDto;
+import br.com.locahouse.controller.dto.usuario.UsuarioBuscaDtoImovel;
+import br.com.locahouse.controller.dto.usuario.UsuarioCadastroDto;
+import br.com.locahouse.controller.dto.usuario.UsuarioAtualizacaoDto;
 import br.com.locahouse.model.Usuario;
 
 import java.util.Collections;

@@ -1,6 +1,6 @@
 package br.com.locahouse.mapper;
 
-import br.com.locahouse.dto.cep.CepConsultaViaCepDto;
+import br.com.locahouse.service.integration.viacep.dto.CepViaCepDto;
 import br.com.locahouse.model.Cep;
 
 public final class CepMapper {
@@ -8,7 +8,7 @@ public final class CepMapper {
     private CepMapper() {
     }
 
-    public static Cep cepConsultaViaCepDtoToEntity(CepConsultaViaCepDto dto) {
+    public static Cep cepViaCepDtoToEntity(CepViaCepDto dto) {
         Cep cep = new Cep();
         cep.setNumero(dto.cep());
         cep.setUf(dto.uf());

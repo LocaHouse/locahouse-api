@@ -1,6 +1,6 @@
-package br.com.locahouse.dto.cep;
+package br.com.locahouse.service.integration.viacep.dto;
 
-public record CepConsultaViaCepDto(
+public record CepViaCepDto(
 
         String cep,
 

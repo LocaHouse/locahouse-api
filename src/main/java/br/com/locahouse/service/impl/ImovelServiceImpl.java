@@ -1,9 +1,9 @@
 package br.com.locahouse.service.impl;
 
-import br.com.locahouse.enums.StatusImovelEnum;
+import br.com.locahouse.model.enums.StatusImovelEnum;
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
-import br.com.locahouse.integration.ViaCepService;
+import br.com.locahouse.service.integration.viacep.ViaCepService;
 import br.com.locahouse.model.Imovel;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.service.*;
@@ -49,6 +49,7 @@ public class ImovelServiceImpl implements ImovelService {
     public Page<Imovel> buscar(Pageable pageable, Integer id, Integer status) {
         if (status != null && !StatusImovelEnum.verificarExistencia(status))
             throw new BusinessException("Status inválido.", HttpStatus.UNPROCESSABLE_ENTITY);
+
         return this.repository.buscar(pageable, id, status);
     }
 
@@ -72,9 +73,9 @@ public class ImovelServiceImpl implements ImovelService {
     }
 
     private void salvar(Imovel imovel, String numeroCep) {
-        if (this.cepService.verificarExistencia(numeroCep)) {
+        if (this.cepService.verificarExistencia(numeroCep))
             imovel.setCep(this.cepService.buscarPeloNumero(numeroCep));
-        } else {
+        else {
             try {
                 imovel.setCep(this.cepService.salvar(this.viaCepService.consultar(numeroCep)));
             } catch (IOException e) {

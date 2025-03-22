@@ -1,6 +1,6 @@
 package br.com.locahouse.model;
 
-import br.com.locahouse.enums.StatusImovelEnum;
+import br.com.locahouse.model.enums.StatusImovelEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Table(name = "imoveis")
 @Entity
-public class Imovel {
+public final class Imovel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

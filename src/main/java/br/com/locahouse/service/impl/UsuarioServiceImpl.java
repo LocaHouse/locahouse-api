@@ -5,9 +5,9 @@ import br.com.locahouse.exception.RecursoNaoEcontradoException;
 import br.com.locahouse.exception.UniqueConstraintVioladaException;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.UsuarioRepository;
-import br.com.locahouse.security.authentication.JwtTokenService;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import br.com.locahouse.service.TokenService;
 import br.com.locahouse.service.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +29,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final AuthenticationManager authenticationManager;
 
-    private final JwtTokenService jwtTokenService;
+    private final TokenService tokenService;
 
     private final SecurityConfiguration securityConfiguration;
 
     @Autowired
-    public UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, SecurityConfiguration securityConfiguration) {
+    public UsuarioServiceImpl(UsuarioRepository repository, AuthenticationManager authenticationManager, TokenService tokenService, SecurityConfiguration securityConfiguration) {
         this.repository = repository;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenService = jwtTokenService;
+        this.tokenService = tokenService;
         this.securityConfiguration = securityConfiguration;
     }
 
@@ -62,7 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         // Retorna um token JWT para o usuário autenticado
-        return jwtTokenService.gerarToken(userDetails);
+        return tokenService.gerarToken(userDetails);
     }
 
     @Override

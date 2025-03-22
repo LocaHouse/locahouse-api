@@ -1,6 +1,6 @@
 package br.com.locahouse.exception.handler;
 
-import br.com.locahouse.dto.erro.ErroDto;
+import br.com.locahouse.exception.dto.ExceptionDto;
 import br.com.locahouse.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +23,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
         List<String> mensagens = e.getBindingResult().getFieldErrors().stream().map(error -> Objects.requireNonNull(error.getDefaultMessage())).toList();
-        return handleExceptionInternal(e, new ErroDto(HttpStatus.valueOf(statusCode.value()), mensagens), headers, statusCode, request);
+        return handleExceptionInternal(e, new ExceptionDto(HttpStatus.valueOf(statusCode.value()), mensagens), headers, statusCode, request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBusinessException(BadCredentialsException e, WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        return handleExceptionInternal(e, new ErroDto(status, List.of(e.getMessage() + ".")), headers(), status, request);
+        return handleExceptionInternal(e, new ExceptionDto(status, List.of(e.getMessage() + ".")), headers(), status, request);
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusinessException(BusinessException e, WebRequest request) {
-        return handleExceptionInternal(e, new ErroDto(e.getHttpStatus(), List.of(e.getMessage())), headers(), e.getHttpStatus(), request);
+        return handleExceptionInternal(e, new ExceptionDto(e.getHttpStatus(), List.of(e.getMessage())), headers(), e.getHttpStatus(), request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String mensagem = "Erro interno do servidor.";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         LOGGER.error(mensagem, e);
-        return handleExceptionInternal(e, new ErroDto(status, List.of(mensagem)), headers(), status, request);
+        return handleExceptionInternal(e, new ExceptionDto(status, List.of(mensagem)), headers(), status, request);
     }
 
     private HttpHeaders headers() {

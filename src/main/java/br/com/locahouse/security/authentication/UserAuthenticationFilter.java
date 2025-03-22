@@ -1,12 +1,13 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.dto.erro.ErroDto;
+import br.com.locahouse.exception.dto.ExceptionDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ComodoDoImovelRepository;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
 import br.com.locahouse.security.userdetails.UserDetailsImpl;
+import br.com.locahouse.service.TokenService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
@@ -30,7 +31,7 @@ import java.util.List;
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenService jwtTokenService;
+    private final TokenService tokenService;
 
     private final UsuarioRepository usuarioRepository;
 
@@ -47,8 +48,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     };
 
     @Autowired
-    private UserAuthenticationFilter(JwtTokenService jwtTokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
-        this.jwtTokenService = jwtTokenService;
+    private UserAuthenticationFilter(TokenService tokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
+        this.tokenService = tokenService;
         this.usuarioRepository = usuarioRepository;
         this.imovelRepository = imovelRepository;
         this.comodoDoImovelRepository = comodoDoImovelRepository;
@@ -66,7 +67,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
 
         String requestUri = request.getRequestURI();
-        if (verificarEndpointComAutenticacao(requestUri)) {
+        if (verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO)) {
             String token = recuperarToken(request);
             if (token == null) {
                 gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
@@ -74,7 +75,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             }
 
             try {
-                Usuario usuario = usuarioRepository.findById(Integer.parseInt(jwtTokenService.recuperarSubject(token))).orElse(null);
+                Usuario usuario = usuarioRepository.findById(Integer.parseInt(tokenService.buscarSubject(token))).orElse(null);
                 if (usuario == null) {
                     gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                     return;
@@ -97,7 +98,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                 return;
             }
-        } else if (!verificarEndpointSemAutenticacao(requestUri)) {
+        } else if (!verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_SEM_AUTENTICACAO)) {
             gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
             return;
         }
@@ -105,18 +106,9 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean verificarEndpointComAutenticacao(String requestUri) {
+    private boolean verificarExistenciaEndpoint(String endpoint, String[] endpoints) {
         AntPathMatcher pathMatcher = new AntPathMatcher();
-        return Arrays.stream(SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO).anyMatch(
-                pattern -> pathMatcher.match(pattern, requestUri)
-        );
-    }
-
-    private boolean verificarEndpointSemAutenticacao(String requestUri) {
-        AntPathMatcher pathMatcher = new AntPathMatcher();
-        return Arrays.stream(SecurityConfiguration.ENDPOINTS_SEM_AUTENTICACAO).anyMatch(
-                pattern -> pathMatcher.match(pattern, requestUri)
-        );
+        return Arrays.stream(endpoints).anyMatch(pattern -> pathMatcher.match(pattern, endpoint));
     }
 
     private String recuperarToken(HttpServletRequest request) {
@@ -152,7 +144,6 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {
         response.setStatus(httpStatus.value());
-        String jsonResponse = gson.toJson(new ErroDto(httpStatus, List.of(mensagem)));
-        response.getWriter().write(jsonResponse);
+        response.getWriter().write(gson.toJson(new ExceptionDto(httpStatus, List.of(mensagem))));
     }
 }

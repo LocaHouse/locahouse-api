@@ -1,4 +1,4 @@
-package br.com.locahouse.dto.comododoimovel;
+package br.com.locahouse.controller.dto.comododoimovel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;

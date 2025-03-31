@@ -1,12 +1,16 @@
 package br.com.locahouse.model;
 
 import br.com.locahouse.model.enums.StatusImovelEnum;
+import br.com.locahouse.model.enums.usertype.StatusImovelEnumUserType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
@@ -18,9 +22,9 @@ public final class Imovel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Setter(AccessLevel.NONE)
+    @Type(value = StatusImovelEnumUserType.class)
     @Column(nullable = false)
-    private Integer status;
+    private StatusImovelEnum status;
 
     @Column(length = 500, nullable = false)
     private String descricao;
@@ -46,24 +50,4 @@ public final class Imovel {
 
     @OneToMany(mappedBy = "imovel")
     private List<ComodoDoImovel> comodos;
-
-    public Imovel() {
-    }
-
-    public Imovel(Integer id, StatusImovelEnum status, String descricao, String numero, String complemento, BigDecimal valor, BigDecimal tamanho, Usuario usuario, Cep cep, List<ComodoDoImovel> comodos) {
-        this.id = id;
-        this.status = status.getCodigo();
-        this.descricao = descricao;
-        this.numero = numero;
-        this.complemento = complemento;
-        this.valor = valor;
-        this.tamanho = tamanho;
-        this.usuario = usuario;
-        this.cep = cep;
-        this.comodos = comodos;
-    }
-
-    public void setStatus(StatusImovelEnum status) {
-        this.status = status.getCodigo();
-    }
 }

@@ -28,7 +28,7 @@ public final class ImovelMapper {
     public static ImovelBuscaDto entityToImovelBuscaDto(Imovel imovel) {
         return new ImovelBuscaDto(
                 imovel.getId(),
-                imovel.getStatus(),
+                imovel.getStatus().getCodigo(),
                 imovel.getDescricao(),
                 imovel.getNumero(),
                 imovel.getComplemento(),

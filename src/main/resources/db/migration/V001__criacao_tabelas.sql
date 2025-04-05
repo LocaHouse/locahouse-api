@@ -32,7 +32,7 @@ CREATE TABLE imoveis(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 
 	status INT NOT NULL,
-	CHECK (status IN(0, 1, 2)),
+	CHECK(status IN(0, 1, 2)),
 
 	descricao VARCHAR(500) NOT NULL,
 
@@ -41,10 +41,10 @@ CREATE TABLE imoveis(
 	complemento VARCHAR(255),
 
 	valor DECIMAL(14, 2) NOT NULL,
-	CHECK (valor > 0),
+	CHECK(valor > 0),
 
 	tamanho DECIMAL(8, 3) NOT NULL,
-	CHECK (tamanho > 0),
+	CHECK(tamanho > 0),
 
 	usuario_id INT NOT NULL,
 	FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -72,4 +72,20 @@ CREATE TABLE comodos_imoveis(
 	FOREIGN KEY(imovel_id) REFERENCES imoveis(id) ON DELETE CASCADE,
 
 	UNIQUE(comodo_id, imovel_id)
+);
+
+CREATE TABLE imagens_imoveis(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+
+    sequencia INT NOT NULL,
+    CHECK(sequencia >= 0),
+
+    descricao VARCHAR(100) NOT NULL,
+
+    caminho VARCHAR(200) UNIQUE NOT NULL,
+
+    imovel_id INT NOT NULL,
+    FOREIGN KEY(imovel_id) REFERENCES imoveis(id) ON DELETE CASCADE,
+
+    UNIQUE(sequencia, imovel_id)
 );

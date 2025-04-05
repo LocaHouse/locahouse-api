@@ -50,4 +50,7 @@ public final class Imovel {
 
     @OneToMany(mappedBy = "imovel")
     private List<ComodoDoImovel> comodos;
+
+    @OneToMany(mappedBy = "imovel")
+    private List<ImagemDoImovel> imagens;
 }

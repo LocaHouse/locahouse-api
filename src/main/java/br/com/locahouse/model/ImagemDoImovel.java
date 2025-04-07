@@ -26,6 +26,6 @@ public final class ImagemDoImovel {
     private String caminho;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "imovel_id", nullable = false)
     private Imovel imovel;
 }

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ImagemDoImovelRepository extends JpaRepository<ImagemDoImovel, Integer> {
+public interface ImagemDoImovelRepository extends JpaRepository<ImagemDoImovel, Integer>, ImagemDoImovelCustomRepository {
 }

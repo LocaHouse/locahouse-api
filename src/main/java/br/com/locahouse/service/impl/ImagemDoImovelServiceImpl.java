@@ -30,20 +30,21 @@ public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
     }
 
     @Override
-    public ImagemDoImovel cadastrar(Integer imovelId, ImagemDoImovel imagemDoImovel, MultipartFile imagem) {
-        imagemDoImovel.setImovel(imovelService.buscarPeloId(imovelId));
-        this.salvar(imagemDoImovel, imagem);
-        return imagemDoImovel;
-    }
-
-    void salvar(ImagemDoImovel imagemDoImovel, MultipartFile imagem) {
-        imagemDoImovel.setCaminho(this.armazenarImagemNoDisco(imagem));
-        this.repository.save(imagemDoImovel);
-    }
-
-    private String armazenarImagemNoDisco(MultipartFile imagem) {
+    public ImagemDoImovel cadastrar(Integer imovelId, MultipartFile imagem) {
+        ImagemDoImovel imagemDoImovel = new ImagemDoImovel();
+        imagemDoImovel.setImovel(this.imovelService.buscarPeloId(imovelId));
+        imagemDoImovel.setCaminho(this.gravarImagemNoDisco(imagem));
         try {
-            Path caminho = Paths.get("c:/users/gabri/desktop/");
+            return this.repository.save(imagemDoImovel);
+        } catch (Exception e) {
+            this.apagarImagemDoDisco(imagemDoImovel.getCaminho());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private String gravarImagemNoDisco(MultipartFile imagem) {
+        try {
+            Path caminho = Paths.get(System.getenv("CAMINHO_IMAGENS_IMOVEIS"));
             if (!Files.exists(caminho))
                 Files.createDirectories(caminho);
 
@@ -53,6 +54,16 @@ public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
             return caminho.toString();
         } catch (IOException e) {
             throw new BusinessException("Erro ao fazer o upload da imagem.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void apagarImagemDoDisco(String caminho) {
+        try {
+            Path path = Path.of(caminho);
+            if (Files.exists(path))
+                Files.delete(path);
+        } catch (IOException e) {
+            throw new BusinessException("Erro ao fazer a remoção da imagem.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

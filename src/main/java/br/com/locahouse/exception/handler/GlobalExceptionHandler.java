@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUnexpectedException(Exception e, WebRequest request) {
         String mensagem = "Erro interno do servidor.";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        LOGGER.error(mensagem, e);
+        LOGGER.error("{}\n{}", mensagem, e.getMessage(), e);
         return handleExceptionInternal(e, new ExceptionDto(status, List.of(mensagem)), headers(), status, request);
     }
 

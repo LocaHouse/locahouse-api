@@ -19,9 +19,6 @@ public final class ImagemDoImovel {
     @Column(nullable = false)
     private Integer sequencia;
 
-    @Column(length = 100, nullable = false)
-    private String descricao;
-
     @Column(length = 200, nullable = false)
     private String caminho;
 

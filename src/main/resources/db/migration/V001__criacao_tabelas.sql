@@ -80,8 +80,6 @@ CREATE TABLE imagens_imoveis(
     sequencia INT NOT NULL,
     CHECK(sequencia >= 0),
 
-    descricao VARCHAR(100) NOT NULL,
-
     caminho VARCHAR(200) UNIQUE NOT NULL,
 
     imovel_id INT NOT NULL,

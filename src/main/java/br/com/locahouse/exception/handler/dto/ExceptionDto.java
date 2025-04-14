@@ -1,4 +1,4 @@
-package br.com.locahouse.exception.dto;
+package br.com.locahouse.exception.handler.dto;
 
 import org.springframework.http.HttpStatus;
 

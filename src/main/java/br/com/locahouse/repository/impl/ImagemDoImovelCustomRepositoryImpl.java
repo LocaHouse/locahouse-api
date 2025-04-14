@@ -17,9 +17,9 @@ class ImagemDoImovelCustomRepositoryImpl implements ImagemDoImovelCustomReposito
     }
 
     @Override
-    public Integer buscarProximaSequenciaDisponivel(Integer idImovel) {
-        TypedQuery<Integer> queryProximaSequencia = entityManager.createQuery("SELECT COALESCE(MAX(i.sequencia), 0) + 1 FROM ImagemDoImovel i WHERE i.imovel.id = :idImovel", Integer.class);
-        queryProximaSequencia.setParameter("idImovel", idImovel);
-        return queryProximaSequencia.getSingleResult();
+    public Integer obterSequenciaDisponivel(Integer imovelId) {
+        TypedQuery<Integer> querySequenciaDisponivel = entityManager.createQuery("SELECT COALESCE(MAX(i.sequencia), 0) + 1 FROM ImagemDoImovel i WHERE i.imovel.id = :imovelId", Integer.class);
+        querySequenciaDisponivel.setParameter("imovelId", imovelId);
+        return querySequenciaDisponivel.getSingleResult();
     }
 }

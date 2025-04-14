@@ -32,8 +32,7 @@ public class ComodoDoImovelServiceImpl implements ComodoDoImovelService {
     @Override
     public ComodoDoImovel cadastrar(Integer imovelId, ComodoDoImovel comodoDoImovel) {
         comodoDoImovel.setImovel(this.imovelService.buscarPeloId(imovelId));
-        this.salvar(comodoDoImovel);
-        return comodoDoImovel;
+        return this.salvar(comodoDoImovel);
     }
 
     @Override
@@ -45,8 +44,7 @@ public class ComodoDoImovelServiceImpl implements ComodoDoImovelService {
     public ComodoDoImovel atualizar(Integer id, ComodoDoImovel comodoDoImovel) {
         ComodoDoImovel comodoDoImovelParaAtualizar = this.buscarPeloId(id);
         BeanUtils.copyProperties(comodoDoImovel, comodoDoImovelParaAtualizar, "id", "imovel");
-        this.salvar(comodoDoImovelParaAtualizar);
-        return comodoDoImovelParaAtualizar;
+        return salvar(comodoDoImovelParaAtualizar);
     }
 
     @Override
@@ -54,10 +52,10 @@ public class ComodoDoImovelServiceImpl implements ComodoDoImovelService {
         this.repository.delete(this.buscarPeloId(id));
     }
 
-    private void salvar(ComodoDoImovel comodoDoImovel) {
+    private ComodoDoImovel salvar(ComodoDoImovel comodoDoImovel) {
         comodoDoImovel.setComodo(this.comodoService.buscarPeloId(comodoDoImovel.getComodo().getId()));
         this.verificarUnicidadeComodoImovel(comodoDoImovel.getId(), comodoDoImovel.getComodo().getId(), comodoDoImovel.getImovel().getId());
-        this.repository.save(comodoDoImovel);
+        return this.repository.save(comodoDoImovel);
     }
 
     private void verificarUnicidadeComodoImovel(Integer id, Integer comodoId, Integer imovelId) {

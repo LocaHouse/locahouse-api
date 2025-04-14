@@ -86,8 +86,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void atualizarSenha(Integer id, String senhaAtual, String novaSenha) {
         Usuario usuario = this.buscarPeloId(id);
-        if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha()))
+        if (!securityConfiguration.passwordEncoder().matches(senhaAtual, usuario.getSenha())) {
             throw new BusinessException("Senha atual incorreta.", HttpStatus.UNAUTHORIZED);
+        }
         usuario.setSenha(securityConfiguration.passwordEncoder().encode(novaSenha));
         this.salvar(usuario);
     }
@@ -107,24 +108,28 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private void verificarUnicidadeCpf(Integer id, String cpf) {
         Optional<Usuario> usuario = this.repository.findByCpf(cpf);
-        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId()))) {
             throw new UniqueConstraintVioladaException("CPF");
+        }
     }
 
     private void verificarUnicidadeTelefone(Integer id, String telefone) {
         Optional<Usuario> usuario = this.repository.findByTelefone(telefone);
-        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId()))) {
             throw new UniqueConstraintVioladaException("Telefone");
+        }
     }
 
     private void verificarUnicidadeEmail(Integer id, String email) {
         Optional<Usuario> usuario = this.repository.findByEmail(email);
-        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId())))
+        if (usuario.isPresent() && (id == null || !id.equals(usuario.get().getId()))) {
             throw new UniqueConstraintVioladaException("E-mail");
+        }
     }
 
     private void verificarMaioridade(LocalDate dataNascimento) {
-        if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18)
+        if (Period.between(dataNascimento, LocalDate.now()).getYears() < 18) {
             throw new BusinessException("É necessário ser maior de 18 anos para prosseguir.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 }

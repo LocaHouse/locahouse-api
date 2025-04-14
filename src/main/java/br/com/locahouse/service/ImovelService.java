@@ -8,7 +8,7 @@ public interface ImovelService {
 
     Imovel cadastrar(Integer usuarioId, Imovel imovel, String numeroCep);
 
-    Page<Imovel> buscar(Pageable pageable, Integer id, Integer status);
+    Page<Imovel> buscar(Pageable pageable, Integer usuarioId, Integer status);
 
     Imovel buscarPeloId(Integer id);
 

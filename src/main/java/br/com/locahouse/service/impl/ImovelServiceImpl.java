@@ -41,16 +41,16 @@ public class ImovelServiceImpl implements ImovelService {
     @Override
     public Imovel cadastrar(Integer usuarioId, Imovel imovel, String numeroCep) {
         imovel.setUsuario(this.usuarioService.buscarPeloId(usuarioId));
-        this.salvar(imovel, numeroCep);
-        return imovel;
+        return this.salvar(imovel, numeroCep);
     }
 
     @Override
-    public Page<Imovel> buscar(Pageable pageable, Integer id, Integer status) {
-        if (status != null && !StatusImovelEnum.verificarExistencia(status))
+    public Page<Imovel> buscar(Pageable pageable, Integer usuarioId, Integer status) {
+        if (status != null && !StatusImovelEnum.verificarExistencia(status)) {
             throw new BusinessException("Status inválido.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
-        return this.repository.buscar(pageable, id, status);
+        return this.repository.buscar(pageable, usuarioId, status);
     }
 
     @Override
@@ -63,8 +63,7 @@ public class ImovelServiceImpl implements ImovelService {
     public Imovel atualizar(Integer id, Imovel imovel, String numeroCep) {
         Imovel imovelParaAtualizar = this.buscarPeloId(id);
         BeanUtils.copyProperties(imovel, imovelParaAtualizar, "id", "usuario");
-        this.salvar(imovelParaAtualizar, numeroCep);
-        return imovelParaAtualizar;
+        return this.salvar(imovelParaAtualizar, numeroCep);
     }
 
     @Override
@@ -72,16 +71,17 @@ public class ImovelServiceImpl implements ImovelService {
         this.repository.delete(this.buscarPeloId(id));
     }
 
-    private void salvar(Imovel imovel, String numeroCep) {
-        if (this.cepService.verificarExistencia(numeroCep))
+    private Imovel salvar(Imovel imovel, String numeroCep) {
+        if (this.cepService.verificarExistencia(numeroCep)) {
             imovel.setCep(this.cepService.buscarPeloNumero(numeroCep));
-        else {
+        } else {
             try {
                 imovel.setCep(this.cepService.salvar(this.viaCepService.consultar(numeroCep)));
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
         }
-        this.repository.save(imovel);
+
+        return this.repository.save(imovel);
     }
 }

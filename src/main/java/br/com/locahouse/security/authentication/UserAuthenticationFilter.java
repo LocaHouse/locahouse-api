@@ -1,6 +1,6 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.exception.dto.ExceptionDto;
+import br.com.locahouse.exception.handler.dto.ExceptionDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ComodoDoImovelRepository;
 import br.com.locahouse.repository.ImagemDoImovelRepository;

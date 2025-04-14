@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ImovelCustomRepository {
 
-    Page<Imovel> buscar(Pageable pageable, Integer idUsuario, Integer status);
+    Page<Imovel> buscar(Pageable pageable, Integer usuarioId, Integer status);
 }

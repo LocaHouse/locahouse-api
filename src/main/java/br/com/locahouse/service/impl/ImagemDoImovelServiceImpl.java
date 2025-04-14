@@ -32,7 +32,7 @@ public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
     public ImagemDoImovel cadastrar(Integer imovelId, MultipartFile imagem) {
         ImagemDoImovel imagemDoImovel = new ImagemDoImovel();
         imagemDoImovel.setImovel(this.imovelService.buscarPeloId(imovelId));
-        imagemDoImovel.setSequencia(this.repository.buscarProximaSequenciaDisponivel(imovelId));
+        imagemDoImovel.setSequencia(this.repository.obterSequenciaDisponivel(imovelId));
         imagemDoImovel.setCaminho(this.armazenamentoImagemService.gerarCaminho(imagem));
         this.repository.save(imagemDoImovel);
         this.armazenamentoImagemService.gravarNoDisco(imagem, imagemDoImovel.getCaminho());

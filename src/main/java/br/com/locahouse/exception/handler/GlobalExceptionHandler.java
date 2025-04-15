@@ -1,6 +1,6 @@
 package br.com.locahouse.exception.handler;
 
-import br.com.locahouse.exception.dto.ExceptionDto;
+import br.com.locahouse.exception.handler.dto.ExceptionDto;
 import br.com.locahouse.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
-        List<String> mensagens = e.getBindingResult().getFieldErrors().stream().map(error -> Objects.requireNonNull(error.getDefaultMessage())).toList();
-        return handleExceptionInternal(e, new ExceptionDto(HttpStatus.valueOf(statusCode.value()), mensagens), headers, statusCode, request);
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException e, @NonNull HttpHeaders headers, @NonNull HttpStatusCode statusCode, @NonNull WebRequest request) {
+        return handleExceptionInternal(e, new ExceptionDto(HttpStatus.valueOf(statusCode.value()), e.getBindingResult().getFieldErrors().stream().map(error -> Objects.requireNonNull(error.getDefaultMessage())).toList()), headers, statusCode, request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -39,9 +38,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUnexpectedException(Exception e, WebRequest request) {
-        String mensagem = "Erro interno do servidor.";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        LOGGER.error(mensagem, e);
+        String mensagem = "Erro interno do servidor.";
+        LOGGER.error("{}\n{}", mensagem, e.getMessage(), e);
         return handleExceptionInternal(e, new ExceptionDto(status, List.of(mensagem)), headers(), status, request);
     }
 

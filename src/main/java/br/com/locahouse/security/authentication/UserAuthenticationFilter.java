@@ -1,8 +1,9 @@
 package br.com.locahouse.security.authentication;
 
-import br.com.locahouse.exception.dto.ExceptionDto;
+import br.com.locahouse.exception.handler.dto.ExceptionDto;
 import br.com.locahouse.model.Usuario;
 import br.com.locahouse.repository.ComodoDoImovelRepository;
+import br.com.locahouse.repository.ImagemDoImovelRepository;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.repository.UsuarioRepository;
 import br.com.locahouse.security.config.SecurityConfiguration;
@@ -39,6 +40,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private final ComodoDoImovelRepository comodoDoImovelRepository;
 
+    private final ImagemDoImovelRepository imagemDoImovelRepository;
+
     private final Gson gson;
 
     private static final String[] MENSAGENS_ERRO = {
@@ -48,11 +51,12 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     };
 
     @Autowired
-    private UserAuthenticationFilter(TokenService tokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, Gson gson) {
+    private UserAuthenticationFilter(TokenService tokenService, UsuarioRepository usuarioRepository, ImovelRepository imovelRepository, ComodoDoImovelRepository comodoDoImovelRepository, ImagemDoImovelRepository imagemDoImovelRepository, Gson gson) {
         this.tokenService = tokenService;
         this.usuarioRepository = usuarioRepository;
         this.imovelRepository = imovelRepository;
         this.comodoDoImovelRepository = comodoDoImovelRepository;
+        this.imagemDoImovelRepository = imagemDoImovelRepository;
         this.gson = gson;
     }
 
@@ -67,27 +71,27 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
 
         String requestUri = request.getRequestURI();
-        if (verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO)) {
-            String token = recuperarToken(request);
+        if (this.verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_COM_AUTENTICACAO)) {
+            String token = this.recuperarToken(request);
             if (token == null) {
-                gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
+                this.gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                 return;
             }
 
             try {
                 Usuario usuario = usuarioRepository.findById(Integer.parseInt(tokenService.buscarSubject(token))).orElse(null);
                 if (usuario == null) {
-                    gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
+                    this.gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                     return;
                 }
 
                 try {
-                    if (!usuario.getId().equals(obterIdUsuario(requestUri))) {
-                        gerarErro(response, HttpStatus.FORBIDDEN, MENSAGENS_ERRO[1]);
+                    if (!usuario.getId().equals(this.obterIdUsuario(requestUri))) {
+                        this.gerarErro(response, HttpStatus.FORBIDDEN, MENSAGENS_ERRO[1]);
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
+                    this.gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
                     return;
                 }
 
@@ -95,11 +99,11 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException e) {
-                gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
+                this.gerarErro(response, HttpStatus.UNAUTHORIZED, MENSAGENS_ERRO[0]);
                 return;
             }
-        } else if (!verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_SEM_AUTENTICACAO)) {
-            gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
+        } else if (!this.verificarExistenciaEndpoint(requestUri, SecurityConfiguration.ENDPOINTS_SEM_AUTENTICACAO)) {
+            this.gerarErro(response, HttpStatus.NOT_FOUND, MENSAGENS_ERRO[2]);
             return;
         }
 
@@ -118,14 +122,16 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     private Integer obterIdUsuario(String requestUri) throws NumberFormatException {
         String[] partesUri = requestUri.split("/");
-        String recursoUri = obterElementoDaUri(partesUri, 3);
-        String operacaoUri = obterElementoDaUri(partesUri, 2);
-        Integer idUri = Integer.parseInt(obterElementoDaUri(partesUri, 1));
+        String recursoUri = this.obterElementoDaUri(partesUri, 3);
+        String operacaoUri = this.obterElementoDaUri(partesUri, 2);
+        Integer idUri = Integer.parseInt(this.obterElementoDaUri(partesUri, 1));
 
-        if (isImovelId(recursoUri, operacaoUri))
-            return imovelRepository.findById(idUri).map(imovel -> imovel.getUsuario().getId()).orElse(null);
-        else if (isComodoDoImovelId(recursoUri))
-            return comodoDoImovelRepository.findById(idUri).map(comodo -> comodo.getImovel().getUsuario().getId()).orElse(null);
+        if (this.isImovelId(recursoUri, operacaoUri))
+            return this.imovelRepository.findById(idUri).map(imovel -> imovel.getUsuario().getId()).orElse(null);
+        else if (this.isComodoDoImovelId(recursoUri))
+            return this.comodoDoImovelRepository.findById(idUri).map(comodo -> comodo.getImovel().getUsuario().getId()).orElse(null);
+        else if (this.isImagemDoImovelId(recursoUri))
+            return this.imagemDoImovelRepository.findById(idUri).map(imagem -> imagem.getImovel().getUsuario().getId()).orElse(null);
 
         return idUri;
     }
@@ -135,11 +141,15 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isImovelId(String recursoUri, String operacaoUri) {
-        return recursoUri.equals("imoveis") && !operacaoUri.equals("cadastrar") && !operacaoUri.equals("buscar-meus") || recursoUri.equals("comodos-imoveis") && operacaoUri.equals("cadastrar");
+        return recursoUri.equals("imoveis") && !operacaoUri.equals("cadastrar") && !operacaoUri.equals("buscar-meus") || recursoUri.equals("comodos-imoveis") && operacaoUri.equals("cadastrar") || recursoUri.equals("imagens-imoveis") && operacaoUri.equals("upload");
     }
 
     private boolean isComodoDoImovelId(String recursoUri) {
         return recursoUri.equals("comodos-imoveis");
+    }
+
+    private boolean isImagemDoImovelId(String recursoUri) {
+        return recursoUri.equals("imagens-imoveis");
     }
 
     private void gerarErro(HttpServletResponse response, HttpStatus httpStatus, String mensagem) throws IOException {

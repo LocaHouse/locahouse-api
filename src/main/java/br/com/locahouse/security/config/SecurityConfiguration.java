@@ -49,7 +49,8 @@ public class SecurityConfiguration {
             "/api/v1/comodos-imoveis/cadastrar/*",
             "/api/v1/comodos-imoveis/buscar/*",
             "/api/v1/comodos-imoveis/atualizar/*",
-            "/api/v1/comodos-imoveis/deletar/*"
+            "/api/v1/comodos-imoveis/deletar/*",
+            "/api/v1/imagens-imoveis/upload/*"
     };
 
     @Bean

@@ -4,7 +4,7 @@ import br.com.locahouse.model.Cep;
 
 public interface CepService {
 
-    Cep salvar(Cep cep);
+    Cep salvar(String numero);
 
     Cep buscarPeloNumero(String numero);
 

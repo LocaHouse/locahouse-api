@@ -1,7 +1,7 @@
 package br.com.locahouse.controller.doc;
 
 import br.com.locahouse.controller.dto.usuario.*;
-import br.com.locahouse.exception.dto.ExceptionDto;
+import br.com.locahouse.exception.handler.dto.ExceptionDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;

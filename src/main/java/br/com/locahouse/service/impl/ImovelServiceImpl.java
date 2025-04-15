@@ -3,7 +3,6 @@ package br.com.locahouse.service.impl;
 import br.com.locahouse.model.enums.StatusImovelEnum;
 import br.com.locahouse.exception.BusinessException;
 import br.com.locahouse.exception.RecursoNaoEcontradoException;
-import br.com.locahouse.service.integration.viacep.ViaCepService;
 import br.com.locahouse.model.Imovel;
 import br.com.locahouse.repository.ImovelRepository;
 import br.com.locahouse.service.*;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-
 @Service
 public class ImovelServiceImpl implements ImovelService {
 
@@ -27,14 +24,11 @@ public class ImovelServiceImpl implements ImovelService {
 
     private final CepService cepService;
 
-    private final ViaCepService viaCepService;
-
     @Autowired
-    public ImovelServiceImpl(ImovelRepository repository, UsuarioService usuarioService, CepService cepService, ViaCepService viaCepService) {
+    public ImovelServiceImpl(ImovelRepository repository, UsuarioService usuarioService, CepService cepService) {
         this.repository = repository;
         this.usuarioService = usuarioService;
         this.cepService = cepService;
-        this.viaCepService = viaCepService;
     }
 
     @Transactional
@@ -75,13 +69,8 @@ public class ImovelServiceImpl implements ImovelService {
         if (this.cepService.verificarExistencia(numeroCep)) {
             imovel.setCep(this.cepService.buscarPeloNumero(numeroCep));
         } else {
-            try {
-                imovel.setCep(this.cepService.salvar(this.viaCepService.consultar(numeroCep)));
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage());
-            }
+            imovel.setCep(this.cepService.salvar(numeroCep));
         }
-
         return this.repository.save(imovel);
     }
 }

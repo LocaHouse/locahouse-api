@@ -43,34 +43,38 @@ public class ViaCepServiceImpl implements ViaCepService {
     }
 
     @Override
-    public Cep consultar(String numeroCep) throws IOException {
-        ViaCepDto dto = null;
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build()) {
-            CloseableHttpResponse response = httpClient.execute(new HttpGet("https://viacep.com.br/ws/" + this.removerHifenCep(numeroCep) + "/json"));
-            if (response.getStatusLine().getStatusCode() == HttpStatus.BAD_REQUEST.value()) {
-                throw new BusinessException("CEP inválido.", HttpStatus.BAD_REQUEST);
+    public Cep consultar(String numeroCep) {
+        try {
+            ViaCepDto dto = null;
+            try (CloseableHttpClient httpClient = HttpClientBuilder.create().disableRedirectHandling().build()) {
+                CloseableHttpResponse response = httpClient.execute(new HttpGet("https://viacep.com.br/ws/" + this.removerHifenCep(numeroCep) + "/json"));
+                if (response.getStatusLine().getStatusCode() == HttpStatus.BAD_REQUEST.value()) {
+                    throw new BusinessException("CEP inválido.", HttpStatus.BAD_REQUEST);
+                }
+
+                HttpEntity httpEntity = response.getEntity();
+                if (httpEntity != null) {
+                    dto = this.gson.fromJson(EntityUtils.toString(httpEntity), ViaCepDto.class);
+                }
             }
 
-            HttpEntity httpEntity = response.getEntity();
-            if (httpEntity != null) {
-                dto = this.gson.fromJson(EntityUtils.toString(httpEntity), ViaCepDto.class);
+            if (dto == null) {
+                throw new BusinessException("Erro ao consultar o ViaCEP.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        }
+            if (dto.erro() != null && dto.erro().equals("true")) {
+                throw new BusinessException("CEP não encontrado na base de dados do ViaCEP.", HttpStatus.UNPROCESSABLE_ENTITY);
+            }
 
-        if (dto == null) {
-            throw new BusinessException("Erro ao consultar o ViaCEP.", HttpStatus.INTERNAL_SERVER_ERROR);
+            Cep cep = new Cep();
+            cep.setNumero(dto.cep());
+            cep.setUf(dto.uf());
+            cep.setCidade(dto.localidade());
+            cep.setBairro(dto.bairro());
+            cep.setRua(dto.logradouro());
+            return cep;
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao consultar o ViaCEP.");
         }
-        if (dto.erro() != null && dto.erro().equals("true")) {
-            throw new BusinessException("CEP não encontrado na base de dados do ViaCEP.", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        Cep cep = new Cep();
-        cep.setNumero(dto.cep());
-        cep.setUf(dto.uf());
-        cep.setCidade(dto.localidade());
-        cep.setBairro(dto.bairro());
-        cep.setRua(dto.logradouro());
-        return cep;
     }
 
     private String removerHifenCep(String numeroCep) {

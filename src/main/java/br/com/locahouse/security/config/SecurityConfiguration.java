@@ -50,7 +50,8 @@ public class SecurityConfiguration {
             "/api/v1/comodos-imoveis/buscar/*",
             "/api/v1/comodos-imoveis/atualizar/*",
             "/api/v1/comodos-imoveis/deletar/*",
-            "/api/v1/imagens-imoveis/upload/*"
+            "/api/v1/imagens-imoveis/upload/*",
+            "/api/v1/imagens-imoveis/deletar/*"
     };
 
     @Bean

@@ -22,4 +22,10 @@ public class ImagemDoImovelController {
     public ResponseEntity<Void> cadastrar(@PathVariable Integer imovelId, @RequestParam("imagem") MultipartFile imagem) {
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(this.service.cadastrar(imovelId, imagem).getId()).toUri()).build();
     }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        this.service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

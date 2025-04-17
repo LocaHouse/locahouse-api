@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Transactional
 @Service
 public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
 
@@ -29,6 +28,7 @@ public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
     }
 
     @Override
+    @Transactional
     public ImagemDoImovel cadastrar(Integer imovelId, MultipartFile imagem) {
         ImagemDoImovel imagemDoImovel = new ImagemDoImovel();
         imagemDoImovel.setImovel(this.imovelService.buscarPeloId(imovelId));
@@ -45,6 +45,7 @@ public class ImagemDoImovelServiceImpl implements ImagemDoImovelService {
     }
 
     @Override
+    @Transactional
     public void deletar(Integer id) {
         ImagemDoImovel imagemDoImovel = this.buscarPeloId(id);
         this.repository.delete(imagemDoImovel);

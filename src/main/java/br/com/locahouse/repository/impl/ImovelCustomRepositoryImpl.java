@@ -1,6 +1,7 @@
 package br.com.locahouse.repository.impl;
 
 import br.com.locahouse.model.Imovel;
+import br.com.locahouse.model.enums.StatusImovelEnum;
 import br.com.locahouse.repository.ImovelCustomRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -21,7 +22,7 @@ class ImovelCustomRepositoryImpl implements ImovelCustomRepository {
     }
 
     @Override
-    public Page<Imovel> buscar(Pageable pageable, Integer usuarioId, Integer status) {
+    public Page<Imovel> buscar(Pageable pageable, Integer usuarioId, StatusImovelEnum status) {
         String select = "SELECT i FROM Imovel i";
         String condicao = " WHERE ";
         if (usuarioId != null) {

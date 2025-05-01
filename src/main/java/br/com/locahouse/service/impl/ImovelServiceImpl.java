@@ -44,7 +44,7 @@ public class ImovelServiceImpl implements ImovelService {
             throw new BusinessException("Status inválido.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return this.repository.buscar(pageable, usuarioId, status);
+        return this.repository.buscar(pageable, usuarioId, status == null ? null : StatusImovelEnum.bucarEnumPeloCodigo(status));
     }
 
     @Override
